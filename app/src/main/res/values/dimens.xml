@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="primary_margin">16dp</dimen>
+    <dimen name="card_view_margin">8dp</dimen>
+    <dimen name="item_news_height">96dp</dimen>
+    <dimen name="item_image_width">80dp</dimen>
+
+    <dimen name="fab_bottom_margin">72dp</dimen>
+
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="bnv_elevation">8dp</dimen>
+    
+    <dimen name="drawer_header_height">160dp</dimen>
+
+    <!-- override navigation item min width -->
+    <dimen name="design_bottom_navigation_item_min_width" tools:override="true">65dp</dimen>
+</resources>

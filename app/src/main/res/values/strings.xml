@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Conquer</string>
+
+    <string name="bottom_news">news</string>
+    <string name="bottom_video">video</string>
+    <string name="bottom_music">music</string>
+    <string name="bottom_message">message</string>
+
+    <string name="loading">loading…</string>
+
+    <string name="float_action_button_behavior">com.hon.conquer.ui.common.FloatActionButtonBehavior</string>
+
+    <string name="drawer_menu_cache">manage cache</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="exit_app">exit Conquer</string>
+    <string name="confirm">yeah</string>
+</resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_news_item"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_news_height"
+    android:padding="@dimen/primary_margin"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    >
+
+    <TextView
+        android:id="@+id/tv_news_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@id/iv_news_item"
+        android:layout_toStartOf="@id/iv_news_item"
+        android:textColor="@color/colorSecondaryText"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_marginEnd="@dimen/primary_margin"
+        android:layout_marginRight="@dimen/primary_margin"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textSize="16sp"
+        />
+    <ImageView
+        android:id="@+id/iv_news_item"
+        android:layout_width="@dimen/item_image_width"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/placeholder"
+        />
+
+</RelativeLayout>
