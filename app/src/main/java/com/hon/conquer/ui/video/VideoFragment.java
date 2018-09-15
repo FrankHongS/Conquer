@@ -28,13 +28,12 @@ public class VideoFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_video,container,false);
         mTextView=view.findViewById(R.id.tv_fragment);
-        mToolbar=view.findViewById(R.id.toolbar);
         mTextView.setText(R.string.bottom_video);
         return view;
     }
 
     @Override
-    protected void setToolbarTitle() {
-        mToolbar.setTitle(R.string.bottom_video);
+    public void setToolbarTitle(Toolbar toolbar) {
+        toolbar.setTitle(R.string.bottom_video);
     }
 }

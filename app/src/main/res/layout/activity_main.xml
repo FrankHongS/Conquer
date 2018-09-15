@@ -8,21 +8,42 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="end">
 
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/container"
+            android:id="@+id/fl_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/primary_margin"
+            android:layout_marginRight="@dimen/primary_margin"
+            android:layout_marginBottom="@dimen/fab_bottom_margin"
+            app:elevation="@dimen/fab_elevation"
+            android:layout_gravity="bottom|end"
+            android:tint="@color/colorIconAndText"
+            app:srcCompat="@drawable/ic_calendar"
+            app:layout_behavior="@string/float_action_button_behavior"
             />
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottom_navigation_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
             android:background="@color/colorAccent"
             android:focusable="true"
             android:clickable="true"
@@ -31,7 +52,7 @@
             app:elevation="@dimen/bnv_elevation"
             app:menu="@menu/menu_bottom_navigation"
             />
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nv_drawer_menu"

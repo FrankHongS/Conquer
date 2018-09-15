@@ -8,7 +8,9 @@
 
     <string name="loading">loading…</string>
 
+    <!--layout behavior-->
     <string name="float_action_button_behavior">com.hon.conquer.ui.common.FloatActionButtonBehavior</string>
+    <string name="swipe_dismiss_behavior">android.support.design.widget.SwipeDismissBehavior</string>
 
     <string name="drawer_menu_cache">manage cache</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

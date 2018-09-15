@@ -3,6 +3,7 @@ package com.hon.conquer.ui.news;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,12 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hon.conquer.BaseFragment;
-import com.hon.conquer.MainActivity;
-import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
+import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.R;
 import com.hon.conquer.api.NewsService;
 import com.hon.conquer.ui.common.NewsAdapter;
 import com.hon.conquer.ui.common.NewsItemDivider;
+import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.CalendarUtil;
 import com.hon.conquer.util.RetrofitUtil;
 import com.hon.conquer.util.ToastUtil;
@@ -49,7 +50,6 @@ public class NewsFragment extends BaseFragment {
 
     private OptimizedRecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private FloatingActionButton mFloatingActionButton;
 
     private List<ZhihuDailyNewsDetail> mNewsItemList = new ArrayList<>();
     private NewsAdapter mNewsAdapter;
@@ -79,14 +79,13 @@ public class NewsFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         initViews(view);
         return view;
     }
 
     private void initViews(View view) {
-        mToolbar = view.findViewById(R.id.toolbar);
         mRecyclerView = view.findViewById(R.id.rv_news);
         mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
         mNewsAdapter = new NewsAdapter(this);
@@ -131,10 +130,14 @@ public class NewsFragment extends BaseFragment {
 //        mRecyclerView.setItemAnimator();
         mRecyclerView.setOnLoadMoreListener(() -> new Handler().postDelayed(this::loadData, 5000));
         mSwipeRefreshLayout.setOnRefreshListener(()->onRefresh(mCalendarUtil.getCurrentDate()));
-        mFloatingActionButton = view.findViewById(R.id.fab_calendar);
-        mFloatingActionButton.setOnClickListener(v -> {
+
+        mCalendarUtil = new CalendarUtil(this);
+        mCalendarUtil.setOnDismissListener(dialog -> fab.show());
+        mCalendarUtil.setOnDateSetListener((view1, year, month, day) ->
+                onRefresh(CalendarUtil.getSelectedDate(year, month, day)));
+        fab.setOnClickListener(v -> {
             // hide()&show() by ViewPropertyAnimator
-            mFloatingActionButton.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+            fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
                 @Override
                 public void onHidden(FloatingActionButton fab) {
                     mCalendarUtil.showDatePickerDialog();
@@ -146,16 +149,13 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mCalendarUtil = new CalendarUtil(this);
-        mCalendarUtil.setOnDismissListener(dialog -> mFloatingActionButton.show());
-        mCalendarUtil.setOnDateSetListener((view1, year, month, day) ->
-                onRefresh(CalendarUtil.getSelectedDate(year, month, day)));
+
         fetchNewsDataByNetwork(mCalendarUtil.getCurrentDate(), createLoadingObserver(true));
     }
 
     @Override
-    protected void setToolbarTitle() {
-        mToolbar.setTitle(R.string.bottom_news);
+    public void setToolbarTitle(Toolbar toolbar) {
+        toolbar.setTitle(R.string.bottom_news);
     }
 
     private void fetchNewsDataByNetwork(String date, Observer<ZhihuDailyNews> observer) {
@@ -232,10 +232,6 @@ public class NewsFragment extends BaseFragment {
 
     public void smoothScrollToFirst(){
         mRecyclerView.smoothScrollToPosition(0);
-    }
-
-    public Toolbar getToolbar(){
-        return mToolbar;
     }
 
 }

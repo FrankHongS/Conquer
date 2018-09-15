@@ -28,13 +28,12 @@ public class MessageFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_message,container,false);
         mTextView=view.findViewById(R.id.tv_fragment);
-        mToolbar=view.findViewById(R.id.toolbar);
         mTextView.setText(R.string.bottom_message);
         return view;
     }
 
     @Override
-    protected void setToolbarTitle() {
-        mToolbar.setTitle(R.string.bottom_message);
+    public void setToolbarTitle(Toolbar toolbar) {
+        toolbar.setTitle(R.string.bottom_message);
     }
 }

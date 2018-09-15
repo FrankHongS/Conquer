@@ -1,8 +1,11 @@
 package com.hon.conquer;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.Toolbar;
 
+import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.message.MessageFragment;
 import com.hon.conquer.ui.music.MusicFragment;
 import com.hon.conquer.ui.news.NewsFragment;
@@ -27,54 +30,23 @@ public class NavigationController {
     private MessageFragment mMessageFragment;
 
     private BaseFragment mCurrentFragment;
-    private List<BaseFragment> mFragments=new ArrayList<>();
+    private List<Fragment> mFragments=new ArrayList<>();
 
-    public NavigationController(MainActivity mainActivity){
-        this.mContainerId=R.id.container;
-        mFragmentManager=mainActivity.getSupportFragmentManager();
+    private Toolbar mToolbar;
+    private FloatingActionButton mFab;
+
+    public NavigationController(MainActivity mainActivity, int containerId, Toolbar toolbar,
+                                FloatingActionButton fab, String firstFragment){
+        this.mContainerId=containerId;
+        this.mFragmentManager=mainActivity.getSupportFragmentManager();
+        this.mToolbar=toolbar;
+        this.mFab=fab;
+
+        initFragments(firstFragment);
     }
 
-    public void navigationTo(String target){
-        if("news".equals(target)){
-            mFragmentManager.beginTransaction()
-                    .show(mNewsFragment)
-                    .hide(mVideoFragment)
-                    .hide(mMusicFragment)
-                    .hide(mMessageFragment)
-                    .commit();
-            setCurrentFragment(mNewsFragment);
-        }
+    private void initFragments(String firstFragment) {
 
-        if("video".equals(target)){
-            mFragmentManager.beginTransaction()
-                    .show(mVideoFragment)
-                    .hide(mNewsFragment)
-                    .hide(mMusicFragment)
-                    .hide(mMessageFragment)
-                    .commit();
-            setCurrentFragment(mVideoFragment);
-        }
-        if("music".equals(target)){
-            mFragmentManager.beginTransaction()
-                    .show(mMusicFragment)
-                    .hide(mNewsFragment)
-                    .hide(mVideoFragment)
-                    .hide(mMessageFragment)
-                    .commit();
-            setCurrentFragment(mMusicFragment);
-        }
-        if("message".equals(target)){
-            mFragmentManager.beginTransaction()
-                    .show(mMessageFragment)
-                    .hide(mNewsFragment)
-                    .hide(mVideoFragment)
-                    .hide(mMusicFragment)
-                    .commit();
-            setCurrentFragment(mMessageFragment);
-        }
-    }
-
-    public void initFragments() {
         mNewsFragment=new NewsFragment();
         mVideoFragment=new VideoFragment();
         mMusicFragment=new MusicFragment();
@@ -100,9 +72,57 @@ public class NavigationController {
                     .add(mContainerId,mMessageFragment,"MessageFragment")
                     .commit();
         }
+
+        navigationTo(firstFragment);
     }
 
-    public List<BaseFragment> getFragments(){
+    public void navigationTo(String target){
+        BaseFragment currentFragment=null;
+
+        if("news".equals(target)){
+            mFragmentManager.beginTransaction()
+                    .show(mNewsFragment)
+                    .hide(mVideoFragment)
+                    .hide(mMusicFragment)
+                    .hide(mMessageFragment)
+                    .commit();
+            currentFragment=mNewsFragment;
+        }else if("video".equals(target)){
+            mFragmentManager.beginTransaction()
+                    .show(mVideoFragment)
+                    .hide(mNewsFragment)
+                    .hide(mMusicFragment)
+                    .hide(mMessageFragment)
+                    .commit();
+            currentFragment=mVideoFragment;
+        }else if("music".equals(target)){
+            mFragmentManager.beginTransaction()
+                    .show(mMusicFragment)
+                    .hide(mNewsFragment)
+                    .hide(mVideoFragment)
+                    .hide(mMessageFragment)
+                    .commit();
+            currentFragment=mMusicFragment;
+        }else if("message".equals(target)){
+            mFragmentManager.beginTransaction()
+                    .show(mMessageFragment)
+                    .hide(mNewsFragment)
+                    .hide(mVideoFragment)
+                    .hide(mMusicFragment)
+                    .commit();
+            currentFragment=mMessageFragment;
+        }else{
+            throw new RuntimeException("no such Fragment error");
+        }
+
+        if(currentFragment!=null){
+            setCurrentFragment(currentFragment);
+            currentFragment.setToolbarTitle(mToolbar);
+            currentFragment.setFab(mFab);
+        }
+    }
+
+    public List<Fragment> getFragments(){
         mFragments.add(mNewsFragment);
         mFragments.add(mMusicFragment);
         mFragments.add(mVideoFragment);
