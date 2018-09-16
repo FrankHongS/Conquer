@@ -15,6 +15,8 @@ import com.hon.conquer.R;
 import com.hon.conquer.ui.news.NewsFragment;
 import com.hon.conquer.util.AnimUtil;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity{
 
     private static final String TAG=MainActivity.class.getSimpleName();
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("onCreate");
         setContentView(R.layout.activity_main);
 
         initView();
@@ -112,6 +115,26 @@ public class MainActivity extends AppCompatActivity{
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Timber.d("onRestart");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Timber.d("onSaveInstanceState");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Timber.d("onRestoreInstanceState");
     }
 
     @Override

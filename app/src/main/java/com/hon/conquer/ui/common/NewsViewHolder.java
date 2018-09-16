@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -30,19 +32,19 @@ class NewsViewHolder extends BaseViewHolder<ZhihuDailyNewsDetail> {
     private NewsAdapter.OnItemClickListener mOnItemClickListener;
 
     NewsViewHolder(ViewGroup parent, Fragment fragment, NewsAdapter.OnItemClickListener listener) {
-        super(parent,R.layout.item_news_layout);
+        super(parent, R.layout.item_news_layout);
 
-        mContext=parent.getContext();
-        mFragment=fragment;
-        mOnItemClickListener=listener;
+        mContext = parent.getContext();
+        mFragment = fragment;
+        mOnItemClickListener = listener;
 
-        mNewsItem=itemView.findViewById(R.id.rl_news_item);
-        mNewsTitle=itemView.findViewById(R.id.tv_news_item);
-        mNewsImage=itemView.findViewById(R.id.iv_news_item);
+        mNewsItem = itemView.findViewById(R.id.rl_news_item);
+        mNewsTitle = itemView.findViewById(R.id.tv_news_item);
+        mNewsImage = itemView.findViewById(R.id.iv_news_item);
     }
 
     @Override
-    public void setData(ZhihuDailyNewsDetail data,int position) {
+    public void setData(ZhihuDailyNewsDetail data, int position) {
         mNewsTitle.setText(data.getTitle());
         // 传Fragment或Activity给Glide，使其拥有相同的生命周期
         //优化RecyclerView滚动时加载图片方式
@@ -56,11 +58,13 @@ class NewsViewHolder extends BaseViewHolder<ZhihuDailyNewsDetail> {
 //                .placeholder(R.mipmap.placeholder)
                 .into(mNewsImage);
 
-        mNewsItem.setOnClickListener(view->
-                {
-                    Toast.makeText(mContext,"click item "+position+":)",Toast.LENGTH_LONG).show();
-                    if(mOnItemClickListener!=null)
-                        mOnItemClickListener.onClick(position);
+        mNewsItem.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null)
+                            mOnItemClickListener.onClick(position);
+                    }
                 }
         );
     }

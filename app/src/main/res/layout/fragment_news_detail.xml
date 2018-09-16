@@ -31,7 +31,7 @@ android:layout_height="match_parent">
             android:textSize="20sp"
             tools:text="no penny to my name,no shirt on my back,I can't go back home" />
 
-        <com.hon.conquer.TitleView
+        <com.hon.conquer.widget.TitleView
             android:id="@+id/left"
             android:layout_width="20dp"
             android:layout_height="88dp"
@@ -51,7 +51,7 @@ android:layout_height="match_parent">
             android:layout_toLeftOf="@id/right"
             android:layout_toRightOf="@id/left" />
 
-        <com.hon.conquer.TitleView
+        <com.hon.conquer.widget.TitleView
             android:id="@+id/right"
             android:layout_width="20dp"
             android:layout_height="88dp"

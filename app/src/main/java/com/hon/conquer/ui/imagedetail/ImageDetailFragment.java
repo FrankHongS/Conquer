@@ -5,12 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hon.conquer.R;
+import com.hon.conquer.ui.imagedetail.adapter.PhotoViewAdapter;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.event.ImageDetailEvent;
 import com.hon.photopreviewlayout.ImageData;
@@ -30,12 +33,17 @@ import java.util.List;
 
 public class ImageDetailFragment extends Fragment{
 
-    private PhotoPreviewLayout mPhotoPreviewLayout;
+    public static final String IMAGE_POSITION = "image_position";
+    
+    private ViewPager mViewPager;
+    private TextView mIndicatorText;
+
     private PagerAdapter mPagerAdapter;
 
-    private List<String> mImgUrl;
-
+    private List<String> mImageUrlList;
     private int mPosition;
+
+    private int mPhotoCount=0;
 
     public ImageDetailFragment(){}
 
@@ -53,27 +61,38 @@ public class ImageDetailFragment extends Fragment{
         return view;
     }
 
+    private void initView(View view){
+        mViewPager=view.findViewById(R.id.vp_photo);
+        mIndicatorText=view.findViewById(R.id.tv_photo_indicator);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                mIndicatorText.setText((position+1)+"/"+mPhotoCount);
+            }
+        });
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPosition=getActivity().getIntent().getIntExtra("image_position",2);
-        ToastUtil.showToast(mPosition+"");
-        mPhotoPreviewLayout.setViewPagerCurrentItem(mPosition);
-    }
+        mPosition=getActivity().getIntent().getIntExtra(IMAGE_POSITION,2);
 
-    private void initView(View view){
-        mPhotoPreviewLayout=view.findViewById(R.id.ppl_image);
-        if(mImgUrl!=null&&mImgUrl.size()>0){
-            ImageData<String> imageData=new ImageData<>(ImageData.URL,mImgUrl);
-            mPagerAdapter=new PhotoViewPagerAdapter<>(getActivity(),imageData);
-            mPhotoPreviewLayout.setViewPagerAdapter(mPagerAdapter);
+        if(mImageUrlList!=null&&mImageUrlList.size()>0){
+            mPagerAdapter=new PhotoViewAdapter(getActivity(),mImageUrlList);
+            mViewPager.setAdapter(mPagerAdapter);
+            mViewPager.setCurrentItem(mPosition);
+
+            mPhotoCount=mImageUrlList.size();
+            mIndicatorText.setText((mPosition+1)+"/"+mPhotoCount);
         }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onImageDetailEvent(ImageDetailEvent event){
-        mImgUrl=event.getImageUrl();
-        Log.d("onImageDetailEvent", "onImageDetailEvent: "+mImgUrl);
+        mImageUrlList=event.getImageUrl();
+        Log.d("onImageDetailEvent", "onImageDetailEvent: "+mImageUrlList);
 
     }
 

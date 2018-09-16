@@ -40,6 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import timber.log.Timber;
 
 /**
  * Created by Frank on 2018/3/8.
@@ -92,8 +93,8 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getNewsDetail();
     }
 

@@ -14,4 +14,6 @@
 
     <!-- override navigation item min width -->
     <dimen name="design_bottom_navigation_item_min_width" tools:override="true">65dp</dimen>
+
+    <dimen name="image_preview_indicator_margin_bottom">20dp</dimen>
 </resources>

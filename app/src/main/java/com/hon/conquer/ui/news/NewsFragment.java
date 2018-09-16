@@ -93,10 +93,12 @@ public class NewsFragment extends BaseFragment {
             articleId=mNewsAdapter.get(position).getId();
             articleTitle=mNewsAdapter.get(position).getTitle();
             Intent intent=new Intent(getActivity(), NewsDetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra(NewsDetailActivity.KEY_ARTICLE_ID,articleId);
             intent.putExtra(NewsDetailActivity.KEY_ARTICLE_TITLE,articleTitle);
             startActivity(intent);
         });
+
         mRecyclerView.setAdapterWithLoading(mNewsAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

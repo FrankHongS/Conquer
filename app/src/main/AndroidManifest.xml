@@ -20,8 +20,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.news.newsdetail.NewsDetailActivity"/>
-        <activity android:name=".ui.imagedetail.ImageDetailActivity"/>
+        <activity android:name=".ui.news.newsdetail.NewsDetailActivity"
+            />
+        <activity android:name=".ui.imagedetail.ImageDetailActivity"
+            android:theme="@style/Theme.Design.NoActionBar"/>
     </application>
 
 </manifest>

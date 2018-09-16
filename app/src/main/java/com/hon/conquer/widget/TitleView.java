@@ -1,4 +1,4 @@
-package com.hon.conquer;
+package com.hon.conquer.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.hon.conquer.R;
 
 /**
  * Created by Frank on 2018/3/10.
@@ -37,7 +39,7 @@ public class TitleView extends View {
     public TitleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        TypedArray a=context.obtainStyledAttributes(attrs,R.styleable.TitleView);
+        TypedArray a=context.obtainStyledAttributes(attrs, R.styleable.TitleView);
         mTopColorId=a.getResourceId(R.styleable.TitleView_topColor,R.color.titleViewDefaultColor);
         mBottomColorId=a.getResourceId(R.styleable.TitleView_bottomColor,R.color.titleViewDefaultColor);
         mMiddleLineColorId=a.getResourceId(R.styleable.TitleView_middleLineColor,R.color.titleViewDefaultColor);

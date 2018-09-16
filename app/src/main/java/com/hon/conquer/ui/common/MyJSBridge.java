@@ -7,6 +7,7 @@ import android.webkit.JavascriptInterface;
 
 import com.hon.conquer.Conquer;
 import com.hon.conquer.ui.imagedetail.ImageDetailActivity;
+import com.hon.conquer.ui.imagedetail.ImageDetailFragment;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.event.ImageDetailEvent;
 
@@ -58,7 +59,7 @@ public class MyJSBridge {
     @JavascriptInterface
     public void startImageDetailActivity(String position){
         Intent intent=new Intent(mContext, ImageDetailActivity.class);
-        intent.putExtra("image_position",Integer.valueOf(position));
+        intent.putExtra(ImageDetailFragment.IMAGE_POSITION,Integer.valueOf(position));
         mContext.startActivity(intent);
     }
 
