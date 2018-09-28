@@ -103,8 +103,9 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
 
     private void initViews(View view) {
         mToolbar = view.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.bottom_news);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(v -> getActivity().finish());
 

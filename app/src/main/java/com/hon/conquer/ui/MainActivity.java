@@ -1,5 +1,6 @@
 package com.hon.conquer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 
 import com.hon.conquer.NavigationController;
 import com.hon.conquer.R;
+import com.hon.conquer.ui.favorites.FavoritesActivity;
 import com.hon.conquer.ui.news.NewsFragment;
 import com.hon.conquer.util.AnimUtil;
 import com.hon.conquer.util.ToastUtil;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity{
                         switch (item.getItemId()){
                             case R.id.drawer_news_favorite:
                                 ToastUtil.showToast("favorites :(");
+                                Intent intent=new Intent(MainActivity.this, FavoritesActivity.class);
+                                startActivity(intent);
                                 break;
                             default:
                                 break;

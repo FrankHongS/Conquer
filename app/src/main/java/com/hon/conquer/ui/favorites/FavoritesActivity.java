@@ -1,4 +1,4 @@
-package com.hon.conquer.ui.favorite;
+package com.hon.conquer.ui.favorites;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,5 +16,14 @@ public class FavoritesActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+
+        initFragments();
+    }
+
+    private void initFragments() {
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container,new NewsFavoritesFragment())
+                .commit();
     }
 }

@@ -53,9 +53,6 @@ import timber.log.Timber;
 
 public class NewsFragment extends BaseFragment {
 
-    // unit dip
-    private static final int ITEM_DIVIDER = 1;
-
     private OptimizedRecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -159,7 +156,7 @@ public class NewsFragment extends BaseFragment {
                 }
             }
         });
-        mRecyclerView.addItemDecoration(new NewsItemDivider(ITEM_DIVIDER, Util.getColor(R.color.colorDividerColor)));
+        mRecyclerView.addItemDecoration(new NewsItemDivider(Util.getColor(R.color.colorDividerColor)));
 //        mRecyclerView.setItemAnimator();
         mRecyclerView.setOnLoadMoreListener(() -> new Handler().postDelayed(this::loadData, 5000));
         mSwipeRefreshLayout.setOnRefreshListener(()->onRefresh(mCalendarUtil.getCurrentDate()));

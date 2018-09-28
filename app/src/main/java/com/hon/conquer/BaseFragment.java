@@ -19,12 +19,6 @@ public abstract class BaseFragment extends Fragment{
 
     protected FloatingActionButton fab;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
     public abstract void setToolbarTitle(Toolbar toolbar);
 
     public void setFab(FloatingActionButton fab){

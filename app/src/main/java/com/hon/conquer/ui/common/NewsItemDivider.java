@@ -20,15 +20,17 @@ import timber.log.Timber;
 
 public class NewsItemDivider extends RecyclerView.ItemDecoration{
 
+    // unit dip
+    private static final int ITEM_DIVIDER = 1;
+
     private int mBottomDivider;
     private ColorDrawable mDividerColor;
 
     /**
      * News Item Divider
-     * @param bottom bottom divider size (unit ps)
      */
-    public NewsItemDivider(int bottom,int color){
-        mBottomDivider= Util.dip2px(bottom);
+    public NewsItemDivider(int color){
+        mBottomDivider= Util.dip2px(ITEM_DIVIDER);
         if(color!=0){
             mDividerColor=new ColorDrawable(color);
         }
