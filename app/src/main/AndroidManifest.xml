@@ -21,9 +21,11 @@
         </activity>
 
         <activity android:name=".ui.news.newsdetail.NewsDetailActivity"
+            android:theme="@style/AppTheme.PopupOverlay"
             />
         <activity android:name=".ui.imagedetail.ImageDetailActivity"
             android:theme="@style/Theme.Design.NoActionBar"/>
+        <activity android:name=".ui.favorite.FavoritesActivity" />
     </application>
 
 </manifest>

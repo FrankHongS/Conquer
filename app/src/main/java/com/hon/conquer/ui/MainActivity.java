@@ -1,6 +1,7 @@
 package com.hon.conquer.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -9,11 +10,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.hon.conquer.NavigationController;
 import com.hon.conquer.R;
 import com.hon.conquer.ui.news.NewsFragment;
 import com.hon.conquer.util.AnimUtil;
+import com.hon.conquer.util.ToastUtil;
 
 import timber.log.Timber;
 
@@ -85,7 +88,21 @@ public class MainActivity extends AppCompatActivity{
 
     private void initDrawer() {
         mNavigationView.setNavigationItemSelectedListener(
-                item -> false //todo add item selected listener
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        switch (item.getItemId()){
+                            case R.id.drawer_news_favorite:
+                                ToastUtil.showToast("favorites :(");
+                                break;
+                            default:
+                                break;
+                        }
+
+                        return true;
+                    }
+                }
         );
         mNavigationView.inflateHeaderView(R.layout.drawer_header_layout);
         ActionBarDrawerToggle toggle =

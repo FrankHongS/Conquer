@@ -37,7 +37,7 @@ ext{
     supportVersion='27.0.2'
     retrofitVersion='2.3.0'
     okhttpVersion='3.4.1'
-    archComponentVersion='1.1.0'
+    archComponentVersion='1.1.1'
     rxJava2Version='2.0.7'
     rxAndroidVersion='2.0.1'
     timberVersion='4.6.0'
@@ -67,6 +67,10 @@ dependencies {
     // Architecture Component
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:${archComponentVersion}"
+
+    // Room
+    implementation "android.arch.persistence.room:runtime:${archComponentVersion}"
+    annotationProcessor "android.arch.persistence.room:compiler:${archComponentVersion}"
 
     // Timber (log util)
     implementation "com.jakewharton.timber:timber:${timberVersion}"

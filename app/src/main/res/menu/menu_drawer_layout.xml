@@ -3,27 +3,18 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_city"
-            android:icon="@drawable/ic_cache"
-            android:title="@string/drawer_menu_cache"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_multi_cities"-->
-            <!--android:title="@string/multi_cities"-->
-            <!--android:icon="@drawable/ic_multi_cities"-->
-            <!--/>-->
+            android:id="@+id/drawer_cache"
+            android:icon="@drawable/ic_cached_black_24dp"
+            android:title="@string/drawer_menu_cache" />
     </group>
-
-    <!--<item android:title="@string/app_name">-->
-        <!--<menu>-->
-            <!--<item-->
-                <!--android:id="@+id/nav_set"-->
-                <!--android:icon="@drawable/ic_menu_set"-->
-                <!--android:title="@string/setting"/>-->
-            <!--<item-->
-                <!--android:id="@+id/nav_about"-->
-                <!--android:icon="@drawable/ic_menu_about"-->
-                <!--android:title="@string/about"/>-->
-        <!--</menu>-->
-    <!--</item>-->
+    <item android:title="@string/menu_news">
+        <menu>
+            <item
+                android:id="@+id/drawer_news_favorite"
+                android:checkable="true"
+                android:icon="@drawable/ic_favorite_black_24dp"
+                android:title="@string/news_favorite" />
+        </menu>
+    </item>
 
 </menu>

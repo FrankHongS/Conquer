@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <item
-        android:id="@+id/test"
-        android:title="test"
+        android:id="@+id/news_favorite"
+        android:title="@string/news_favorite"
         android:orderInCategory="100"
         app:showAsAction="never"
         />

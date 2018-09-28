@@ -4,8 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.hon.conquer.R;
+import com.hon.conquer.util.ToastUtil;
+import com.hon.conquer.vo.event.NewsFavoritesEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
@@ -46,12 +52,6 @@ public class NewsDetailActivity extends SwipeBackActivity{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_news_detail,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_out_right,R.anim.slide_out_right);
@@ -61,6 +61,27 @@ public class NewsDetailActivity extends SwipeBackActivity{
     protected void onRestart() {
         super.onRestart();
         Timber.d("onRestart");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_news_detail,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.news_favorite:
+                ToastUtil.showToast("hello world !");
+                EventBus.getDefault().post(new NewsFavoritesEvent());
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

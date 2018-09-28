@@ -1,0 +1,20 @@
+package com.hon.conquer.ui.favorite;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+
+import com.hon.conquer.R;
+
+/**
+ * Created by Frank_Hon on 9/28/2018.
+ * E-mail: v-shhong@microsoft.com
+ */
+public class FavoritesActivity extends AppCompatActivity{
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_favorites);
+    }
+}

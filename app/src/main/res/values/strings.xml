@@ -18,4 +18,8 @@
 
     <string name="exit_app">exit Conquer</string>
     <string name="confirm">yeah</string>
+
+    <string name="menu_news">news</string>
+    <string name="news_favorite">favorites</string>
+
 </resources>

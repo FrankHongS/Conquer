@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hon.conquer.BaseFragment;
+import com.hon.conquer.ConquerExecutors;
+import com.hon.conquer.db.ConquerDatabase;
+import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.R;
 import com.hon.conquer.api.NewsService;
@@ -25,9 +28,14 @@ import com.hon.conquer.util.CalendarUtil;
 import com.hon.conquer.util.RetrofitUtil;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.Util;
+import com.hon.conquer.vo.event.NewsFavoritesEvent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 import com.hon.optimizedrecyclerviewlib.OptimizedRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +73,7 @@ public class NewsFragment extends BaseFragment {
     private int mEndIndex = -1;
     private int mDayCount = 0;
 
-    int articleId;
-    String articleTitle;
-
+    private ZhihuDailyNewsDetail mCurrentClickedItem;
     public NewsFragment() {
     }
 
@@ -82,7 +88,29 @@ public class NewsFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         initViews(view);
+
+        EventBus.getDefault().register(this);
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void addNewsToFavorites(NewsFavoritesEvent event){
+
+        if(mCurrentClickedItem!=null){
+            FavoriteNews news=new FavoriteNews(mCurrentClickedItem);
+            ConquerExecutors.getInstance().getIoExecutors().execute(
+                    ()->ConquerDatabase.getInstance()
+                            .newsFavoritesDao()
+                            .insert(news)
+            );
+
+        }
     }
 
     private void initViews(View view) {
@@ -90,13 +118,16 @@ public class NewsFragment extends BaseFragment {
         mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
         mNewsAdapter = new NewsAdapter(this);
         mNewsAdapter.setOnItemClickListener(position -> {
-            articleId=mNewsAdapter.get(position).getId();
-            articleTitle=mNewsAdapter.get(position).getTitle();
-            Intent intent=new Intent(getActivity(), NewsDetailActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(NewsDetailActivity.KEY_ARTICLE_ID,articleId);
-            intent.putExtra(NewsDetailActivity.KEY_ARTICLE_TITLE,articleTitle);
-            startActivity(intent);
+            mCurrentClickedItem=mNewsAdapter.get(position);
+            if(mCurrentClickedItem!=null){
+                int articleId=mCurrentClickedItem.getId();
+                String articleTitle=mCurrentClickedItem.getTitle();
+                Intent intent=new Intent(getActivity(), NewsDetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_ID,articleId);
+                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_TITLE,articleTitle);
+                startActivity(intent);
+            }
         });
 
         mRecyclerView.setAdapterWithLoading(mNewsAdapter);
