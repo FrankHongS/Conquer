@@ -23,6 +23,9 @@ public interface NewsFavoritesDao {
     @Query("SELECT * FROM news_favorites WHERE newsId<:newsId ORDER BY newsId DESC LIMIT :limit")
     List<FavoriteNews> loadNewsFavorites(int newsId, int limit);
 
+    @Query("SELECT * FROM news_favorites WHERE url_id=:urlId")
+    List<FavoriteNews> loadNewsFavorites(int urlId);
+
     @Insert
     void insert(FavoriteNews newsDetail);
 

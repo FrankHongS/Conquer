@@ -31,12 +31,16 @@ import com.bumptech.glide.Glide;
 import com.hon.conquer.Conquer;
 import com.hon.conquer.R;
 import com.hon.conquer.api.NewsService;
+import com.hon.conquer.db.ConquerDatabase;
+import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.common.MyJSBridge;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.RetrofitUtil;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.WebUtil;
 import com.hon.conquer.vo.news.ZhihuDailyContent;
+
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -209,6 +213,9 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
                 .into(mAvatar);
     }
 
-
+    public boolean checkIfFavorites(){
+        List<FavoriteNews> news=ConquerDatabase.getInstance().newsFavoritesDao().loadNewsFavorites(mArticleId);
+        return news!=null&&!news.isEmpty();
+    }
 
 }

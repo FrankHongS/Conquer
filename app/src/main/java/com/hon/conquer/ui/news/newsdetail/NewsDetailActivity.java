@@ -7,7 +7,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.hon.conquer.ConquerExecutors;
 import com.hon.conquer.R;
+import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
 
@@ -74,8 +76,23 @@ public class NewsDetailActivity extends SwipeBackActivity{
 
         switch (item.getItemId()) {
             case R.id.news_favorite:
-                ToastUtil.showToast("hello world !");
-                EventBus.getDefault().post(new NewsFavoritesEvent());
+                ConquerExecutors.getInstance().getIoExecutors().execute(
+                        ()->{
+                            boolean ifFavorites=mNewsDetailFragment.checkIfFavorites();
+                            ConquerExecutors.getInstance().getMainExecutor()
+                                    .execute(
+                                            ()->{
+                                                if(ifFavorites){
+                                                    ToastUtil.showToast(getResources().getString(R.string.favorites_existing));
+                                                }else {
+                                                    ToastUtil.showToast(getResources().getString(R.string.add_to_favorites));
+                                                    EventBus.getDefault().post(new NewsFavoritesEvent());
+                                                }
+                                            }
+                                    );
+                        }
+                );
+
                 break;
             default:
                 break;
