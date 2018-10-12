@@ -54,10 +54,10 @@ import timber.log.Timber;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class NewsDetailFragment extends Fragment implements NewsDetailContract.View{
+public class NewsDetailFragment extends Fragment implements NewsDetailContract.View {
 
-    private static final String TAG=NewsDetailFragment.class.getSimpleName();
-    
+    private static final String TAG = NewsDetailFragment.class.getSimpleName();
+
     private Toolbar mToolbar;
     private ImageView mAvatar;
     private TextView mTitle;
@@ -72,21 +72,25 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
 
     private MyJSBridge mMyJSBridge;
 
-    private NewsService mNewsContentService = RetrofitUtil.createNewsContentService();
+    private NewsDetailContract.Presenter mNewsPresenter;
 
     public NewsDetailFragment() {
     }
 
     @Override
     public void setPresenter(NewsDetailContract.Presenter presenter) {
-
+        this.mNewsPresenter = presenter;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mArticleId = getActivity().getIntent().getIntExtra(NewsDetailActivity.KEY_ARTICLE_ID, -1);
-        mArticleTitle = getActivity().getIntent().getStringExtra(NewsDetailActivity.KEY_ARTICLE_TITLE);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mArticleId = bundle.getInt(NewsDetailActivity.KEY_ARTICLE_ID);
+            mArticleTitle = bundle.getString(NewsDetailActivity.KEY_ARTICLE_TITLE);
+        }
 
         mMyJSBridge = new MyJSBridge(getActivity());
     }
@@ -96,13 +100,8 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_detail, container, false);
         initViews(view);
+        mNewsPresenter.getNewsDetail(mArticleId);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getNewsDetail();
     }
 
     private void initViews(View view) {
@@ -126,34 +125,9 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
         setWebView();
     }
 
-    private void getNewsDetail(){
-        mNewsContentService.getNewsContent(mArticleId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ZhihuDailyContent>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(ZhihuDailyContent content) {
-                        showContent(content.getBody());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    private void showContent(String body) {
-        String data= WebUtil.appendToHTML(body);
+    @Override
+    public void showContent(String body) {
+        String data = WebUtil.appendToHTML(body);
 
         mNewsDetail.loadDataWithBaseURL("x-data://base", data, "text/html", "utf-8", null);
 
@@ -213,9 +187,9 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
                 .into(mAvatar);
     }
 
-    public boolean checkIfFavorites(){
-        List<FavoriteNews> news=ConquerDatabase.getInstance().newsFavoritesDao().loadNewsFavorites(mArticleId);
-        return news!=null&&!news.isEmpty();
+    public boolean checkIfFavorites() {
+        List<FavoriteNews> news = ConquerDatabase.getInstance().newsFavoritesDao().loadNewsFavorites(mArticleId);
+        return news != null && !news.isEmpty();
     }
 
 }

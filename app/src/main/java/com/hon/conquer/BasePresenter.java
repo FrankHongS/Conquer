@@ -7,5 +7,4 @@ package com.hon.conquer;
 
 public interface BasePresenter {
 
-    void start();
 }

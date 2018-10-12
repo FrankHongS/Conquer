@@ -48,6 +48,13 @@ public class NewsDetailActivity extends SwipeBackActivity{
         else
             mNewsDetailFragment=new NewsDetailFragment();
 
+        Bundle bundle=new Bundle();
+        bundle.putInt(KEY_ARTICLE_ID, getIntent().getIntExtra(NewsDetailActivity.KEY_ARTICLE_ID, -1));
+        bundle.putString(KEY_ARTICLE_TITLE, getIntent().getStringExtra(NewsDetailActivity.KEY_ARTICLE_TITLE));
+
+        mNewsDetailFragment.setArguments(bundle);
+
+        new NewsDetailPresenter(mNewsDetailFragment);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container,mNewsDetailFragment)
                 .commit();

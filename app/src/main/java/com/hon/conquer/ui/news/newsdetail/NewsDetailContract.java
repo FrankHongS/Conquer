@@ -11,10 +11,10 @@ import com.hon.conquer.BaseView;
 public interface NewsDetailContract {
 
     interface View extends BaseView<Presenter>{
-
+        void showContent(String body);
     }
 
     interface Presenter extends BasePresenter{
-
+        void getNewsDetail(int newsId);
     }
 }
