@@ -27,7 +27,7 @@ html {
 }
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
-  background: #F5F5F5;
+  background: #fff;
   padding-top: 0;
   margin: 0;
 }
@@ -132,14 +132,15 @@ ul,
 ol {
   padding-left: 20px;
 }
+
 .main-wrap {
   /*max-width: 1080px;*/
   min-width: 300px;
   margin: 0 auto;
 }
-
 .content-wrap {
   overflow: hidden;
+  /*background-color: #f9f9f9;*/
 }
 .content-wrap a {
   word-break: break-all;
@@ -241,7 +242,7 @@ ol {
 }
 .question {
   overflow: hidden;
-  padding: 0 20px!important;
+  /*padding: 0 20px!important;*/
 }
 .question + .question {
   border-top: 5px solid #f6f6f6;
@@ -252,6 +253,8 @@ ol {
   font-weight: 700;
   font-size: 18px;
   margin: 20px 0;
+  padding: 0 15px;
+  text-align: center;
 }
 .meta .author {
   color: #444;
