@@ -2,12 +2,6 @@ var originFontSize;
 
 $(function(){
 
-        $('p').css({
-            'line-height': 30+'px',
-            'margin-left': 10+'px',
-            'margin-right': 10+'px'
-        });
-
         $('img').parent().css({
             'line-height': 0+'px',
             'margin-left': 0+'px',
