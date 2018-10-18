@@ -1,9 +1,19 @@
 p{
-    padding: 0 20px;
+    text-indent: 1.0em;
+    padding: 0 10px;
     line-height: 30px;
     margin: 0 10px;
 }
 
 blockquote{
     margin: 0.5em 2em;
+}
+
+figcaption{
+	margin: 1.0em auto 1.2em auto;
+	text-align: center;
+}
+
+ul,ol{
+	margin: 0 20px;
 }
