@@ -53,6 +53,7 @@ ext{
     datePickerVersion='3.5.1'
     optimizedrecyclerviewVersion='1.0.2'
     eventbusVersion='3.1.1'
+    rxPermissionVersion='0.10.2'
 }
 
 dependencies {
@@ -101,6 +102,10 @@ dependencies {
     implementation "me.imid.swipebacklayout.lib:library:1.1.0"
 
     implementation "com.hon.photopreviewlayout:photopreviewlayout:1.0.3"
+
+    implementation ("com.github.tbruyelle:rxpermissions:${rxPermissionVersion}"){
+        exclude group: "com.android.support"
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

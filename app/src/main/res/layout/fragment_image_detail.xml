@@ -9,6 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        layout="@layout/layout_image_detail_action_bar"
+        android:layout_gravity="top"/>
+
     <TextView
         android:id="@+id/tv_photo_indicator"
         android:layout_width="wrap_content"
