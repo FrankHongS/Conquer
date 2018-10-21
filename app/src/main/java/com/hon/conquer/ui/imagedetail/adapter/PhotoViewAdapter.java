@@ -82,6 +82,7 @@ public class PhotoViewAdapter extends PagerAdapter{
                         super.onResourceReady(resource, animation);
                         progressBar.setProgress(100);
                         progressBar.setVisibility(View.GONE);
+                        photoView.setImageDrawable(resource);
                     }
                 });
     }

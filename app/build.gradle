@@ -101,7 +101,7 @@ dependencies {
 
     implementation "me.imid.swipebacklayout.lib:library:1.1.0"
 
-    implementation "com.hon.photopreviewlayout:photopreviewlayout:1.0.3"
+    implementation "com.hon.photopreviewlayout:photopreviewlayout:1.0.4"
 
     implementation ("com.github.tbruyelle:rxpermissions:${rxPermissionVersion}"){
         exclude group: "com.android.support"

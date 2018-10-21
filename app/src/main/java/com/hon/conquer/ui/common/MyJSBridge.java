@@ -2,19 +2,16 @@ package com.hon.conquer.ui.common;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.hon.conquer.Conquer;
 import com.hon.conquer.ui.imagedetail.ImageDetailActivity;
 import com.hon.conquer.ui.imagedetail.ImageDetailFragment;
-import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.event.ImageDetailEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Frank on 2018/3/25.
@@ -50,7 +47,7 @@ public class MyJSBridge {
 
     @JavascriptInterface
     public void acquireImageUrl(String[] imageUrlArray){
-        List<String> imageUrlList= Arrays.asList(imageUrlArray);
+        ArrayList<String> imageUrlList= new ArrayList<>(Arrays.asList(imageUrlArray));
         ImageDetailEvent event=new ImageDetailEvent();
         event.setImageUrl(imageUrlList);
         EventBus.getDefault().postSticky(event);

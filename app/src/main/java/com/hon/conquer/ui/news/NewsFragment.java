@@ -74,12 +74,6 @@ public class NewsFragment extends BaseFragment {
     public NewsFragment() {
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +82,12 @@ public class NewsFragment extends BaseFragment {
 
         EventBus.getDefault().register(this);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initFab();
     }
 
     @Override
@@ -165,6 +165,9 @@ public class NewsFragment extends BaseFragment {
         mCalendarUtil.setOnDismissListener(dialog -> fab.show());
         mCalendarUtil.setOnDateSetListener((view1, year, month, day) ->
                 onRefresh(CalendarUtil.getSelectedDate(year, month, day)));
+    }
+
+    private void initFab(){
         fab.setOnClickListener(v -> {
             // hide()&show() by ViewPropertyAnimator
             fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {

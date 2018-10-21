@@ -50,6 +50,7 @@ import java.util.List;
 public class ImageDetailFragment extends Fragment{
 
     public static final String IMAGE_POSITION = "image_position";
+    public static final String IMAGE_LIST = "image_list";
     
     private ViewPager mViewPager;
     private TextView mIndicatorText;
@@ -69,7 +70,9 @@ public class ImageDetailFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+        Bundle bundle=getArguments();
+        if(bundle!=null)
+            mImageUrlList=bundle.getStringArrayList(IMAGE_LIST);
     }
 
     @Nullable
@@ -119,17 +122,10 @@ public class ImageDetailFragment extends Fragment{
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void onImageDetailEvent(ImageDetailEvent event){
-        mImageUrlList=event.getImageUrl();
-        Log.d("onImageDetailEvent", "onImageDetailEvent: "+mImageUrlList);
-
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     private void showPopupWindow(View view) {
@@ -160,12 +156,12 @@ public class ImageDetailFragment extends Fragment{
                 .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        ToastUtil.showToast("tjtklli");
                         savePicturesToGallery(resource);
                     }
                 });
     }
 
+    @SuppressWarnings("checkResult")
     private void savePicturesToGallery(File resource) {
         new RxPermissions(this)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -174,14 +170,13 @@ public class ImageDetailFragment extends Fragment{
                             if (granted) {
                                 ConquerExecutors.getInstance().getIoExecutors()
                                         .execute(
-                                                () -> {
-                                                    FileUtil.savePicturesToGallery(resource);
-                                                }
+                                                () -> FileUtil.savePicturesToGallery(resource)
+
                                         );
 
 
                             }
                         }
-                ).dispose();
+                );
     }
 }

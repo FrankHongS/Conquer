@@ -1,6 +1,6 @@
 package com.hon.conquer.vo.event;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Frank on 2018/5/27.
@@ -9,13 +9,13 @@ import java.util.List;
 
 public class ImageDetailEvent {
 
-    private List<String> imageUrl;
+    private ArrayList<String> imageUrl;
 
-    public List<String> getImageUrl() {
+    public ArrayList<String> getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(List<String> imageUrl) {
+    public void setImageUrl(ArrayList<String> imageUrl) {
         this.imageUrl = imageUrl;
     }
 
