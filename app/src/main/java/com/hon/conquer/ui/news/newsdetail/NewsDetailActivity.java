@@ -1,16 +1,14 @@
 package com.hon.conquer.ui.news.newsdetail;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.hon.conquer.ConquerExecutors;
 import com.hon.conquer.R;
-import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
 

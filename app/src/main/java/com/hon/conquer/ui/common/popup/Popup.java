@@ -1,7 +1,7 @@
 package com.hon.conquer.ui.common.popup;
 
 import android.content.Context;
-import android.support.v7.widget.ListPopupWindow;
+import androidx.appcompat.widget.ListPopupWindow;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.hon.conquer.R;
-import com.hon.conquer.util.Util;
 
 import java.util.List;
 

@@ -1,8 +1,10 @@
 package com.hon.conquer.util;
 
 import android.animation.ValueAnimator;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 /**
  * Created by Frank on 2018/2/4.
@@ -16,7 +18,7 @@ public class AnimUtil {
     private int mHideCount = 0;
     private int mShowCount = 0;
 
-    public void hideBottomNavigationView(BottomNavigationView view,long animTime) {
+    public void hideBottomNavigationView(BottomNavigationView view, long animTime) {
         if (mHideBottomViewValueAnimator == null)
             mHideBottomViewValueAnimator = ValueAnimator.ofFloat(view.getY(),
                     view.getY() + view.getHeight());

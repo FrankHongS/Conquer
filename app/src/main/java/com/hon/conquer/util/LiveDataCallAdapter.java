@@ -1,6 +1,6 @@
 package com.hon.conquer.util;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 
 import com.hon.conquer.api.ApiResponse;

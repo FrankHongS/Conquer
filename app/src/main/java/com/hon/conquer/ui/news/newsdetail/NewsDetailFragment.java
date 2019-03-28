@@ -5,18 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceError;
@@ -28,26 +18,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.hon.conquer.Conquer;
 import com.hon.conquer.R;
-import com.hon.conquer.api.NewsService;
 import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.common.MyJSBridge;
-import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
-import com.hon.conquer.util.RetrofitUtil;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.WebUtil;
-import com.hon.conquer.vo.news.ZhihuDailyContent;
 
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import timber.log.Timber;
 
 /**
  * Created by Frank on 2018/3/8.
@@ -182,8 +171,10 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
     private void showAvatar(String url) {
         Glide.with(Conquer.sConquer)
                 .load(url)
-//                .placeholder(R.mipmap.test)
-                .bitmapTransform(new CropCircleTransformation(getActivity()))
+                .apply(
+                        new RequestOptions()
+                    .transform(new CropCircleTransformation(getActivity()))
+                )
                 .into(mAvatar);
     }
 

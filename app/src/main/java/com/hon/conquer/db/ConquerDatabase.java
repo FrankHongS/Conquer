@@ -1,11 +1,10 @@
 package com.hon.conquer.db;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import com.hon.conquer.Conquer;
-import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 
 /**
  * Created by Frank_Hon on 9/28/2018.

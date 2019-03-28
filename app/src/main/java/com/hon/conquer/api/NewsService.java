@@ -1,13 +1,9 @@
 package com.hon.conquer.api;
 
-import android.arch.lifecycle.LiveData;
-
 import com.hon.conquer.vo.news.ZhihuDailyContent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 

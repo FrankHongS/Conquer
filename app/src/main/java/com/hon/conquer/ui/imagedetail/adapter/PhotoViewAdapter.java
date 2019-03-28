@@ -2,22 +2,23 @@ package com.hon.conquer.ui.imagedetail.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.hon.conquer.R;
 import com.hon.photopreviewlayout.PhotoView;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
 import timber.log.Timber;
 
 /**
@@ -25,7 +26,7 @@ import timber.log.Timber;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class PhotoViewAdapter extends PagerAdapter{
+public class PhotoViewAdapter extends PagerAdapter {
 
     private Context mContext;
     private List<String> mPhotoUrlList;
@@ -67,9 +68,12 @@ public class PhotoViewAdapter extends PagerAdapter{
 
         Glide.with(mContext)
                 .load(mPhotoUrlList.get(position))
-                .placeholder(R.mipmap.placeholder)
-                .error(R.mipmap.error_image)
-                .into(new GlideDrawableImageViewTarget(photoView){
+                .apply(
+                        new RequestOptions()
+                                .placeholder(R.mipmap.placeholder)
+                                .error(R.mipmap.error_image)
+                )
+                .into(new DrawableImageViewTarget(photoView){
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);
@@ -78,8 +82,8 @@ public class PhotoViewAdapter extends PagerAdapter{
                     }
 
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                        super.onResourceReady(resource, animation);
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        super.onResourceReady(resource, transition);
                         progressBar.setProgress(100);
                         progressBar.setVisibility(View.GONE);
                         photoView.setImageDrawable(resource);

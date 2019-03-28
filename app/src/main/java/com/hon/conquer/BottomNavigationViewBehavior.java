@@ -1,24 +1,15 @@
 package com.hon.conquer;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 
-import com.hon.conquer.util.ToastUtil;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import timber.log.Timber;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 /**
  * Created by Frank on 2018/2/1.

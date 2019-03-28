@@ -1,7 +1,8 @@
 package com.hon.conquer.ui.common;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Frank on 2018/9/29.

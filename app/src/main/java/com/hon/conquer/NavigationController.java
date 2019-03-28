@@ -1,10 +1,6 @@
 package com.hon.conquer;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.message.MessageFragment;
 import com.hon.conquer.ui.music.MusicFragment;
@@ -13,6 +9,10 @@ import com.hon.conquer.ui.video.VideoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * Created by Frank on 2018/1/26.

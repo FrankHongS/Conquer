@@ -1,13 +1,13 @@
 package com.hon.conquer.util;
 
 import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by Frank on 2018/2/5.

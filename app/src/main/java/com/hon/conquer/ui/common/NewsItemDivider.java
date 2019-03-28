@@ -3,15 +3,12 @@ package com.hon.conquer.ui.common;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.hon.conquer.util.Util;
-import com.hon.optimizedrecyclerviewlib.BaseAdapter;
 
-import timber.log.Timber;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Frank on 2018/2/12.
@@ -40,7 +37,7 @@ public class NewsItemDivider extends RecyclerView.ItemDecoration{
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         LinearLayoutManager layoutManager= (LinearLayoutManager) parent.getLayoutManager();
-        if(layoutManager.getOrientation()==LinearLayoutManager.VERTICAL){
+        if(layoutManager.getOrientation()==RecyclerView.VERTICAL){
             if(parent.getChildAdapterPosition(view)!=layoutManager.getItemCount()-1){
                 outRect.set(0,0,0,mBottomDivider);
             }
@@ -56,7 +53,7 @@ public class NewsItemDivider extends RecyclerView.ItemDecoration{
             return;
 
         int left,right,bottom,top;
-        if(layoutManager.getOrientation()==LinearLayoutManager.VERTICAL){
+        if(layoutManager.getOrientation()==RecyclerView.VERTICAL){
             for(int i=0;i<childCount-1;i++){
                 View child=parent.getChildAt(i);
                 RecyclerView.LayoutParams params= (RecyclerView.LayoutParams) child.getLayoutParams();

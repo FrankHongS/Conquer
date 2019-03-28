@@ -1,19 +1,12 @@
 package com.hon.conquer.util;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.util.TypedValue;
-import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.hon.conquer.Conquer;
-import com.hon.conquer.R;
 
 /**
  * Created by Frank on 2018/2/12.
