@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.hon.conquer.BaseFragment;
+import com.hon.conquer.base.BaseFragment;
 import com.hon.conquer.R;
 
 import androidx.annotation.Nullable;

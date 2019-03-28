@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.hon.conquer.BaseFragment;
+import com.hon.conquer.base.BaseFragment;
 import com.hon.conquer.ConquerExecutors;
 import com.hon.conquer.R;
 import com.hon.conquer.api.NewsService;
@@ -16,16 +16,19 @@ import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.common.NewsAdapter;
+import com.hon.conquer.ui.common.NewsItem;
 import com.hon.conquer.ui.common.NewsItemDivider;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.CalendarUtil;
-import com.hon.conquer.util.RetrofitUtil;
+import com.hon.conquer.util.RetrofitImpl;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.Util;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
+import com.hon.conquer.vo.news.ZhihuDailyContent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 import com.hon.optimizedrecyclerviewlib.OptimizedRecyclerView;
+import com.hon.pagerecyclerview.item.PageItem;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,17 +54,17 @@ import timber.log.Timber;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class NewsFragment extends BaseFragment {
+public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     private OptimizedRecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private List<ZhihuDailyNewsDetail> mNewsItemList = new ArrayList<>();
+    private List<PageItem> mNewsItemList = new ArrayList<>();
+    private List<ZhihuDailyNewsDetail> mNewsDetailList=new ArrayList<>();
+
     private NewsAdapter mNewsAdapter;
 
     private CalendarUtil mCalendarUtil;
-
-    private NewsService mNewsService=RetrofitUtil.createNewsService();
 
     private static final int FIRST_INTERVAL = 5;
     private static final int INTERVAL = 6;
@@ -71,7 +74,14 @@ public class NewsFragment extends BaseFragment {
     private int mDayCount = 0;
 
     private ZhihuDailyNewsDetail mCurrentClickedItem;
+
+    private NewsContract.Presenter mPresenter;
+    private int mInitialLength;
+
+    private static final int PAGE_SIZE = 5;
+
     public NewsFragment() {
+        // no parameter constructor is necessary
     }
 
     @Nullable
@@ -79,6 +89,9 @@ public class NewsFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         initViews(view);
+
+        // initial news length
+        mInitialLength=Util.getScreenHeight()/getResources().getDimensionPixelSize(R.dimen.item_news_height);
 
         EventBus.getDefault().register(this);
         return view;
@@ -113,9 +126,11 @@ public class NewsFragment extends BaseFragment {
     private void initViews(View view) {
         mRecyclerView = view.findViewById(R.id.rv_news);
         mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
-        mNewsAdapter = new NewsAdapter(this);
+        mNewsAdapter = new NewsAdapter(getContext(),mNewsItemList);
         mNewsAdapter.setOnItemClickListener(position -> {
-            mCurrentClickedItem=mNewsAdapter.get(position);
+
+            mCurrentClickedItem=mNewsDetailList.get(position);
+
             if(mCurrentClickedItem!=null){
                 int articleId=mCurrentClickedItem.getId();
                 String articleTitle=mCurrentClickedItem.getTitle();
@@ -183,7 +198,7 @@ public class NewsFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        fetchNewsDataByNetwork(mCalendarUtil.getCurrentDate(), createLoadingObserver(true));
+        mPresenter.fetchNews(mCalendarUtil.getCurrentDate(), true);
     }
 
     @Override
@@ -191,76 +206,82 @@ public class NewsFragment extends BaseFragment {
         toolbar.setTitle(R.string.bottom_news);
     }
 
-    private void fetchNewsDataByNetwork(String date, Observer<ZhihuDailyNews> observer) {
-        mNewsService.getNews(date)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
-    }
-
-    private void loadInitialData() {
-        mRecyclerView.setRefreshing(true);
-        mNewsAdapter.addAll(mNewsItemList.subList(0, FIRST_INTERVAL));
-        mRecyclerView.setRefreshing(false);
-        mStartIndex = FIRST_INTERVAL;
-        mEndIndex = FIRST_INTERVAL + INTERVAL;
-    }
-
-    private void loadData() {
-        if (mStartIndex == mEndIndex && mStartIndex == -1) {
-            if (mDayCount < 3) {
-                fetchNewsDataByNetwork(mCalendarUtil.getLastDay(mDayCount), createLoadingObserver(false));
-            } else {
-                mNewsAdapter.addAll(new ArrayList<>());
-            }
-        } else {
-            if (mNewsItemList.size() > mEndIndex) {
-                mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mEndIndex));
-                mStartIndex = mEndIndex;
-                mEndIndex += INTERVAL;
-            } else if (mNewsItemList.size() <= mEndIndex && mNewsItemList.size() >= mStartIndex + 1) {
-                mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mNewsItemList.size()));
-                mStartIndex = mEndIndex = -1;
-            }
-        }
-    }
-
     private void onRefresh(String date){
         mNewsAdapter.clear();
         mDayCount = 0;
-        fetchNewsDataByNetwork(date, createLoadingObserver(true));
+        mPresenter.fetchNews(date,true);
     }
 
-    private Observer<ZhihuDailyNews> createLoadingObserver(boolean initial) {
-        return new Observer<ZhihuDailyNews>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                if(initial)
-                    mSwipeRefreshLayout.setRefreshing(true);
+    private void loadData() {
+
+        if(!mNewsDetailList.isEmpty()){
+            loadExistingData(PAGE_SIZE);
+        }else {
+            if (mDayCount < 3) {
+                mPresenter.fetchNews(mCalendarUtil.getLastDay(mDayCount), false);
+            }else {
+                mNewsAdapter.showBottom();
+            }
+        }
+
+    }
+
+    private void loadInitialData(){
+        loadExistingData(mInitialLength);
+    }
+
+    private void loadExistingData(int l){
+        int length=l>mNewsDetailList.size()?mNewsDetailList.size():l;
+
+        for(int i=0;i<length;i++){
+            ZhihuDailyNewsDetail newsDetail=mNewsDetailList.get(i);
+
+            NewsItem newsItem=new NewsItem();
+            newsItem.setTitle(newsDetail.getTitle());
+            newsItem.setImageUrl(newsDetail.getImages().get(0));
+            mNewsItemList.add(newsItem);
+        }
+
+        if(length<mNewsDetailList.size()){
+
+            List<ZhihuDailyNewsDetail> tempList=new ArrayList<>();
+
+            for(int j=length;j<mNewsDetailList.size();j++){
+                tempList.add(mNewsDetailList.get(j));
             }
 
-            @Override
-            public void onNext(ZhihuDailyNews news) {
-                mNewsItemList = news.getStrories();
-                loadInitialData();
-                mDayCount++;
-            }
+            mNewsDetailList=tempList;
+        }else {
+            mNewsDetailList.clear();
+        }
 
-            @Override
-            public void onError(Throwable e) {
-                ToastUtil.showToast("error in loading news");
-                Timber.e("error in loading news");
-                if(initial)
-                    mSwipeRefreshLayout.setRefreshing(false);
-            }
+        mNewsAdapter.notifyItemRangeInserted(0,length);
+    }
 
-            @Override
-            public void onComplete() {
-                ToastUtil.showToast("success :)");
-                if(initial)
-                    mSwipeRefreshLayout.setRefreshing(false);
-            }
-        };
+    @Override
+    public void stopRefreshing() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void startRefreshing() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void showNews(ZhihuDailyNews news,boolean initial) {
+        mNewsDetailList = news.getStrories();
+        if(initial){
+            loadInitialData();
+        }else {
+            loadData();
+        }
+        mDayCount++;
+    }
+
+    @Override
+    public void setPresenter(NewsContract.Presenter presenter) {
+        this.mPresenter=presenter;
     }
 
     public void smoothScrollToFirst(){

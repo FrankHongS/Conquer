@@ -3,10 +3,13 @@ package com.hon.conquer.util;
 import com.hon.conquer.BuildConfig;
 import com.hon.conquer.Conquer;
 import com.hon.conquer.api.NewsService;
+import com.hon.conquer.vo.news.ZhihuDailyContent;
+import com.hon.conquer.vo.news.ZhihuDailyNews;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -23,36 +26,47 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class RetrofitUtil {
+public class RetrofitImpl {
 
-    private RetrofitUtil(){}
-    private static volatile Retrofit.Builder sNewsRetrofitBuilder;
+    private static volatile RetrofitImpl sInstance;
 
-    private static Retrofit.Builder getNewsRetrofitBuilderInstance(){
-        if(sNewsRetrofitBuilder==null){
-            synchronized (RetrofitUtil.class){
-                if(sNewsRetrofitBuilder==null){
-                    sNewsRetrofitBuilder=new Retrofit.Builder()
-                            .baseUrl(NewsService.NEWS_BASE_URL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+    private Retrofit.Builder mNewsRetrofitBuilder;
+
+    private static final String NEWS_CACHE_DIR = "zhihudailynews";
+    private static final String NEWS_CONTENT_CACHE_DIR = "zhihudailynewscontent";
+
+    private RetrofitImpl(){
+        mNewsRetrofitBuilder=new Retrofit.Builder()
+                .baseUrl(NewsService.NEWS_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+    }
+
+    public static RetrofitImpl getInstance(){
+        if(sInstance==null){
+            synchronized (RetrofitImpl.class){
+                if(sInstance==null){
+                    sInstance=new RetrofitImpl();
                 }
             }
         }
 
-        return sNewsRetrofitBuilder;
+        return sInstance;
     }
 
-    public static NewsService createNewsService(){
-        return getNewsRetrofitBuilderInstance()
-                .client(buildNewsOkHttpClient("zhihudailynews"))
-                .build()
-                .create(NewsService.class);
+    public Observable<ZhihuDailyNews> getNews(String date){
+        return buildNewsService(NEWS_CACHE_DIR)
+                .getNews(date);
     }
 
-    public static NewsService createNewsContentService(){
-        return getNewsRetrofitBuilderInstance()
-                .client(buildNewsOkHttpClient("zhihudailynewscontent"))
+    public Observable<ZhihuDailyContent> getNewsContent(int id){
+        return buildNewsService(NEWS_CONTENT_CACHE_DIR)
+                .getNewsContent(id);
+    }
+
+    private NewsService buildNewsService(String cacheDir){
+        return mNewsRetrofitBuilder
+                .client(buildNewsOkHttpClient(cacheDir))
                 .build()
                 .create(NewsService.class);
     }
@@ -60,7 +74,7 @@ public class RetrofitUtil {
     /**
      * build the News OKHttpClient with the cache interceptor
      * @param dir cache directory
-     * @return
+     * @return okHttpClient
      */
 
     private static OkHttpClient buildNewsOkHttpClient(String dir){

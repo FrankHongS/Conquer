@@ -1,35 +1,40 @@
 package com.hon.conquer.ui.common;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
-import com.hon.optimizedrecyclerviewlib.BaseAdapter;
-import com.hon.optimizedrecyclerviewlib.BaseViewHolder;
+import com.hon.conquer.R;
+import com.hon.pagerecyclerview.BasePageViewHolder;
+import com.hon.pagerecyclerview.PageAdapter;
+import com.hon.pagerecyclerview.item.PageItem;
 
-import androidx.fragment.app.Fragment;
+import java.util.List;
 
 /**
- * Created by Frank on 2018/1/31.
- * E-mail:frank_hon@foxmail.com
+ * Created by Frank_Hon on 3/28/2019.
+ * E-mail: v-shhong@microsoft.com
  */
+public class NewsAdapter extends PageAdapter {
 
-public class NewsAdapter extends BaseAdapter<ZhihuDailyNewsDetail,BaseViewHolder<ZhihuDailyNewsDetail>> {
-
-    private Fragment mNewsFragment;
     private OnItemClickListener mOnItemClickListener;
 
-    public NewsAdapter(Fragment newsFragment){
-        this.mNewsFragment=newsFragment;
+    public NewsAdapter(Context context, List<PageItem> itemList) {
+        super(context, itemList);
     }
 
     @Override
-    public BaseViewHolder<ZhihuDailyNewsDetail> onNewCreateViewHolder(ViewGroup parent, int viewType) {
-        return new NewsViewHolder(parent,mNewsFragment,mOnItemClickListener);
+    protected BasePageViewHolder<PageItem> createNormalViewHolder(ViewGroup parent) {
+        return new NewsViewHolder(
+                LayoutInflater.from(context)
+                .inflate(R.layout.item_news_layout,parent,false),
+                mOnItemClickListener
+        );
     }
 
-    @Override
-    public void onNewBindViewHolder(BaseViewHolder<ZhihuDailyNewsDetail> holder, int position) {
-        holder.setData(get(position),position);
+    public void clear(){
+        itemList.clear();
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -39,4 +44,5 @@ public class NewsAdapter extends BaseAdapter<ZhihuDailyNewsDetail,BaseViewHolder
     public interface OnItemClickListener{
         void onClick(int position);
     }
+
 }

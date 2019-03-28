@@ -1,0 +1,24 @@
+package com.hon.pagerecyclerview.item;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+
+/**
+ * Created by Frank_Hon on 3/27/2019.
+ * E-mail: v-shhong@microsoft.com
+ */
+public interface PageItem {
+
+    int NORMAL_ITEM=0;
+    int ERROR_ITEM=1;
+    int LOADING_ITEM=2;
+    int BOTTOM_ITEM=3;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NORMAL_ITEM,ERROR_ITEM,LOADING_ITEM,BOTTOM_ITEM})
+    @interface ItemType{ }
+
+    @ItemType int itemType();
+}

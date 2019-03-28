@@ -1,4 +1,4 @@
-package com.hon.conquer;
+package com.hon.conquer.base;
 
 /**
  * Created by Frank on 2018/7/1.

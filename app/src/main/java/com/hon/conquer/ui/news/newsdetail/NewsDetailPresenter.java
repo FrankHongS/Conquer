@@ -1,7 +1,7 @@
 package com.hon.conquer.ui.news.newsdetail;
 
 import com.hon.conquer.api.NewsService;
-import com.hon.conquer.util.RetrofitUtil;
+import com.hon.conquer.util.RetrofitImpl;
 import com.hon.conquer.vo.news.ZhihuDailyContent;
 
 import io.reactivex.Observer;
@@ -21,7 +21,7 @@ public class NewsDetailPresenter implements NewsDetailContract.Presenter{
 
     public NewsDetailPresenter(NewsDetailContract.View view){
 
-        this.mNewsContentService = RetrofitUtil.createNewsContentService();
+        this.mNewsContentService = RetrofitImpl.createNewsContentService();
         this.mView=view;
 
         view.setPresenter(this);

@@ -1,7 +1,7 @@
 package com.hon.conquer.ui.news.newsdetail;
 
-import com.hon.conquer.BasePresenter;
-import com.hon.conquer.BaseView;
+import com.hon.conquer.base.BasePresenter;
+import com.hon.conquer.base.BaseView;
 
 /**
  * Created by Frank on 2018/7/1.

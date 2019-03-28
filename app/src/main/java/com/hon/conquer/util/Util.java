@@ -3,6 +3,7 @@ package com.hon.conquer.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
 
 import androidx.core.content.ContextCompat;
 
@@ -29,6 +30,17 @@ public class Util {
     public static int getColor(int resId){
         return Conquer.sConquer.getResources().getColor(resId);
     }
+
+    public static int getScreenHeight(){
+        DisplayMetrics dm = Conquer.sConquer.getResources().getDisplayMetrics();
+        return dm.heightPixels;
+    }
+
+    public static int getScreenWidth(){
+        DisplayMetrics dm = Conquer.sConquer.getResources().getDisplayMetrics();
+        return dm.widthPixels;
+    }
+
 
     /**
      * Check network state

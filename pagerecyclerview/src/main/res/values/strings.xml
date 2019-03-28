@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PageRecyclerView</string>
+
+    <string name="error">网络连接失败,请点击重试</string>
+    <string name="no_more">-----我是有底线的-----</string>
+
+</resources>

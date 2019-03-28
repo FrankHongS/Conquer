@@ -1,6 +1,7 @@
 package com.hon.conquer;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.hon.conquer.base.BaseFragment;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.message.MessageFragment;
 import com.hon.conquer.ui.music.MusicFragment;
