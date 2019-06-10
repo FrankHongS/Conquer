@@ -1,10 +1,10 @@
 package com.hon.conquer.ui.news.newsdetail;
 
-import com.hon.conquer.api.NewsService;
 import com.hon.conquer.util.RetrofitImpl;
-import com.hon.conquer.vo.news.ZhihuDailyContent;
 
-import io.reactivex.Observer;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -13,45 +13,32 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Frank_Hon on 10/12/2018.
  * E-mail: v-shhong@microsoft.com
  */
-public class NewsDetailPresenter implements NewsDetailContract.Presenter{
-
-    private NewsService mNewsContentService;
+public class NewsDetailPresenter implements NewsDetailContract.Presenter, LifecycleObserver {
 
     private NewsDetailContract.View mView;
 
-    public NewsDetailPresenter(NewsDetailContract.View view){
+    private Disposable mNewsContentDisposable;
 
-        this.mNewsContentService = RetrofitImpl.createNewsContentService();
-        this.mView=view;
-
+    public NewsDetailPresenter(Lifecycle lifecycle,NewsDetailContract.View view) {
+        this.mView = view;
         view.setPresenter(this);
+
+        lifecycle.addObserver(this);
     }
 
     @Override
     public void getNewsDetail(int newsId) {
-        mNewsContentService.getNewsContent(newsId)
+        mNewsContentDisposable = RetrofitImpl.getInstance().getNewsContent(newsId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ZhihuDailyContent>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+                .subscribe(content -> mView.showContent(content.getBody()));
+    }
 
-                    @Override
-                    public void onNext(ZhihuDailyContent content) {
-                        mView.showContent(content.getBody());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    public void dispose() {
+        if (mNewsContentDisposable != null) {
+            mNewsContentDisposable.dispose();
+        }
     }
 
 }

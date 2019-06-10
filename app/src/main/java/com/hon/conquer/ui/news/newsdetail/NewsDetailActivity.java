@@ -55,7 +55,7 @@ public class NewsDetailActivity extends SwipeBackActivity{
 
         mNewsDetailFragment.setArguments(bundle);
 
-        new NewsDetailPresenter(mNewsDetailFragment);
+        new NewsDetailPresenter(mNewsDetailFragment.getLifecycle(),mNewsDetailFragment);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container,mNewsDetailFragment)
                 .commit();

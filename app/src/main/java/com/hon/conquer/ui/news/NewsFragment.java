@@ -8,10 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.hon.conquer.base.BaseFragment;
 import com.hon.conquer.ConquerExecutors;
 import com.hon.conquer.R;
-import com.hon.conquer.api.NewsService;
+import com.hon.conquer.base.BaseFragment;
 import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
@@ -20,11 +19,8 @@ import com.hon.conquer.ui.common.NewsItem;
 import com.hon.conquer.ui.common.NewsItemDivider;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.CalendarUtil;
-import com.hon.conquer.util.RetrofitImpl;
-import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.Util;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
-import com.hon.conquer.vo.news.ZhihuDailyContent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 import com.hon.optimizedrecyclerviewlib.OptimizedRecyclerView;
@@ -43,11 +39,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * Created by Frank on 2018/1/26.
@@ -60,7 +51,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<PageItem> mNewsItemList = new ArrayList<>();
-    private List<ZhihuDailyNewsDetail> mNewsDetailList=new ArrayList<>();
+    private List<ZhihuDailyNewsDetail> mNewsDetailList = new ArrayList<>();
 
     private NewsAdapter mNewsAdapter;
 
@@ -91,7 +82,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
         initViews(view);
 
         // initial news length
-        mInitialLength=Util.getScreenHeight()/getResources().getDimensionPixelSize(R.dimen.item_news_height);
+        mInitialLength = Util.getScreenHeight() / getResources().getDimensionPixelSize(R.dimen.item_news_height);
 
         EventBus.getDefault().register(this);
         return view;
@@ -110,12 +101,12 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void addNewsToFavorites(NewsFavoritesEvent event){
+    public void addNewsToFavorites(NewsFavoritesEvent event) {
 
-        if(mCurrentClickedItem!=null){
-            FavoriteNews news=new FavoriteNews(mCurrentClickedItem);
+        if (mCurrentClickedItem != null) {
+            FavoriteNews news = new FavoriteNews(mCurrentClickedItem);
             ConquerExecutors.getInstance().getIoExecutors().execute(
-                    ()->ConquerDatabase.getInstance()
+                    () -> ConquerDatabase.getInstance()
                             .newsFavoritesDao()
                             .insert(news)
             );
@@ -126,18 +117,18 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     private void initViews(View view) {
         mRecyclerView = view.findViewById(R.id.rv_news);
         mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
-        mNewsAdapter = new NewsAdapter(getContext(),mNewsItemList);
+        mNewsAdapter = new NewsAdapter(getContext(), mNewsItemList);
         mNewsAdapter.setOnItemClickListener(position -> {
 
-            mCurrentClickedItem=mNewsDetailList.get(position);
+            mCurrentClickedItem = mNewsDetailList.get(position);
 
-            if(mCurrentClickedItem!=null){
-                int articleId=mCurrentClickedItem.getId();
-                String articleTitle=mCurrentClickedItem.getTitle();
-                Intent intent=new Intent(getActivity(), NewsDetailActivity.class);
+            if (mCurrentClickedItem != null) {
+                int articleId = mCurrentClickedItem.getId();
+                String articleTitle = mCurrentClickedItem.getTitle();
+                Intent intent = new Intent(getActivity(), NewsDetailActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_ID,articleId);
-                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_TITLE,articleTitle);
+                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_ID, articleId);
+                intent.putExtra(NewsDetailActivity.KEY_ARTICLE_TITLE, articleTitle);
                 startActivity(intent);
             }
         });
@@ -157,7 +148,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                switch (newState){//TODO bug
+                switch (newState) {//TODO bug
                     case RecyclerView.SCROLL_STATE_IDLE:
 //                        Glide.with(NewsFragment.this).resumeRequests();
                         break;
@@ -174,7 +165,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
         mRecyclerView.addItemDecoration(new NewsItemDivider(Util.getColor(R.color.colorDividerColor)));
 //        mRecyclerView.setItemAnimator();
         mRecyclerView.setOnLoadMoreListener(() -> new Handler().postDelayed(this::loadData, 5000));
-        mSwipeRefreshLayout.setOnRefreshListener(()->onRefresh(mCalendarUtil.getCurrentDate()));
+        mSwipeRefreshLayout.setOnRefreshListener(() -> onRefresh(mCalendarUtil.getCurrentDate()));
 
         mCalendarUtil = new CalendarUtil(this);
         mCalendarUtil.setOnDismissListener(dialog -> fab.show());
@@ -182,7 +173,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
                 onRefresh(CalendarUtil.getSelectedDate(year, month, day)));
     }
 
-    private void initFab(){
+    private void initFab() {
         fab.setOnClickListener(v -> {
             // hide()&show() by ViewPropertyAnimator
             fab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
@@ -197,7 +188,6 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         mPresenter.fetchNews(mCalendarUtil.getCurrentDate(), true);
     }
 
@@ -206,56 +196,56 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
         toolbar.setTitle(R.string.bottom_news);
     }
 
-    private void onRefresh(String date){
+    private void onRefresh(String date) {
         mNewsAdapter.clear();
         mDayCount = 0;
-        mPresenter.fetchNews(date,true);
+        mPresenter.fetchNews(date, true);
     }
 
     private void loadData() {
 
-        if(!mNewsDetailList.isEmpty()){
+        if (!mNewsDetailList.isEmpty()) {
             loadExistingData(PAGE_SIZE);
-        }else {
+        } else {
             if (mDayCount < 3) {
                 mPresenter.fetchNews(mCalendarUtil.getLastDay(mDayCount), false);
-            }else {
+            } else {
                 mNewsAdapter.showBottom();
             }
         }
 
     }
 
-    private void loadInitialData(){
+    private void loadInitialData() {
         loadExistingData(mInitialLength);
     }
 
-    private void loadExistingData(int l){
-        int length=l>mNewsDetailList.size()?mNewsDetailList.size():l;
+    private void loadExistingData(int l) {
+        int length = l > mNewsDetailList.size() ? mNewsDetailList.size() : l;
 
-        for(int i=0;i<length;i++){
-            ZhihuDailyNewsDetail newsDetail=mNewsDetailList.get(i);
+        for (int i = 0; i < length; i++) {
+            ZhihuDailyNewsDetail newsDetail = mNewsDetailList.get(i);
 
-            NewsItem newsItem=new NewsItem();
+            NewsItem newsItem = new NewsItem();
             newsItem.setTitle(newsDetail.getTitle());
             newsItem.setImageUrl(newsDetail.getImages().get(0));
             mNewsItemList.add(newsItem);
         }
 
-        if(length<mNewsDetailList.size()){
+        if (length < mNewsDetailList.size()) {
 
-            List<ZhihuDailyNewsDetail> tempList=new ArrayList<>();
+            List<ZhihuDailyNewsDetail> tempList = new ArrayList<>();
 
-            for(int j=length;j<mNewsDetailList.size();j++){
+            for (int j = length; j < mNewsDetailList.size(); j++) {
                 tempList.add(mNewsDetailList.get(j));
             }
 
-            mNewsDetailList=tempList;
-        }else {
+            mNewsDetailList = tempList;
+        } else {
             mNewsDetailList.clear();
         }
 
-        mNewsAdapter.notifyItemRangeInserted(0,length);
+        mNewsAdapter.notifyItemRangeInserted(0, length);
     }
 
     @Override
@@ -269,11 +259,11 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     @Override
-    public void showNews(ZhihuDailyNews news,boolean initial) {
+    public void showNews(ZhihuDailyNews news, boolean initial) {
         mNewsDetailList = news.getStrories();
-        if(initial){
+        if (initial) {
             loadInitialData();
-        }else {
+        } else {
             loadData();
         }
         mDayCount++;
@@ -281,10 +271,10 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     @Override
     public void setPresenter(NewsContract.Presenter presenter) {
-        this.mPresenter=presenter;
+        this.mPresenter = presenter;
     }
 
-    public void smoothScrollToFirst(){
+    public void smoothScrollToFirst() {
         mRecyclerView.smoothScrollToPosition(0);
     }
 

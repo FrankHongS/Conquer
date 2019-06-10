@@ -6,6 +6,7 @@ import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.message.MessageFragment;
 import com.hon.conquer.ui.music.MusicFragment;
 import com.hon.conquer.ui.news.NewsFragment;
+import com.hon.conquer.ui.news.NewsPresenter;
 import com.hon.conquer.ui.video.VideoFragment;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class NavigationController {
     private VideoFragment mVideoFragment;
     private MusicFragment mMusicFragment;
     private MessageFragment mMessageFragment;
+
+    private NewsPresenter mNewsPresenter;
 
     private BaseFragment mCurrentFragment;
     private List<Fragment> mFragments=new ArrayList<>();
@@ -72,6 +75,10 @@ public class NavigationController {
             mFragmentManager.beginTransaction()
                     .add(mContainerId,mMessageFragment,"MessageFragment")
                     .commit();
+        }
+
+        if (mNewsPresenter==null){
+            mNewsPresenter=new NewsPresenter(mNewsFragment.getLifecycle(),mNewsFragment);
         }
 
         navigationTo(firstFragment);

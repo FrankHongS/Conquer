@@ -4,6 +4,8 @@ import com.hon.conquer.util.RetrofitImpl;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -14,15 +16,17 @@ import timber.log.Timber;
  * Created by Frank_Hon on 3/28/2019.
  * E-mail: v-shhong@microsoft.com
  */
-public class NewsPresenter implements NewsContract.Presenter {
+public class NewsPresenter implements NewsContract.Presenter, LifecycleObserver {
 
     private RetrofitImpl mRetrofitImpl;
     private NewsContract.View mView;
 
-    public NewsPresenter(NewsContract.View view) {
+    public NewsPresenter(Lifecycle lifecycle,NewsContract.View view) {
         mRetrofitImpl = RetrofitImpl.getInstance();
-
         this.mView = view;
+        view.setPresenter(this);
+
+        lifecycle.addObserver(this);
     }
 
     @Override
