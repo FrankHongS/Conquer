@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 
 import com.hon.conquer.BaseFragment;
 import com.hon.conquer.ConquerExecutors;
+import com.hon.conquer.R;
+import com.hon.conquer.api.NewsService;
 import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
-import com.hon.conquer.R;
-import com.hon.conquer.api.NewsService;
 import com.hon.conquer.ui.common.NewsAdapter;
 import com.hon.conquer.ui.common.NewsItemDivider;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
@@ -197,28 +197,25 @@ public class NewsFragment extends BaseFragment {
 
     private void loadInitialData() {
         mRecyclerView.setRefreshing(true);
-        mNewsAdapter.addAll(mNewsItemList.subList(0, FIRST_INTERVAL));
+        int tempInterval=mNewsItemList.size()>=FIRST_INTERVAL?FIRST_INTERVAL:mNewsItemList.size();
+        mNewsAdapter.addAll(mNewsItemList.subList(0, tempInterval));
         mRecyclerView.setRefreshing(false);
-        mStartIndex = FIRST_INTERVAL;
-        mEndIndex = FIRST_INTERVAL + INTERVAL;
+        mStartIndex = tempInterval;
     }
 
     private void loadData() {
-        if (mStartIndex == mEndIndex && mStartIndex == -1) {
+        if (mNewsItemList.size() <= mStartIndex) {
             if (mDayCount < 3) {
                 fetchNewsDataByNetwork(mCalendarUtil.getLastDay(mDayCount), createLoadingObserver(false));
             } else {
                 mNewsAdapter.addAll(new ArrayList<>());
             }
+        } else if (mNewsItemList.size() >= mStartIndex + INTERVAL) {
+            mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mStartIndex + INTERVAL));
+            mStartIndex += INTERVAL;
         } else {
-            if (mNewsItemList.size() > mEndIndex) {
-                mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mEndIndex));
-                mStartIndex = mEndIndex;
-                mEndIndex += INTERVAL;
-            } else if (mNewsItemList.size() <= mEndIndex && mNewsItemList.size() >= mStartIndex + 1) {
-                mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mNewsItemList.size()));
-                mStartIndex = mEndIndex = -1;
-            }
+            mNewsAdapter.addAll(mNewsItemList.subList(mStartIndex, mNewsItemList.size()));
+            mStartIndex = mNewsItemList.size();
         }
     }
 
