@@ -19,22 +19,17 @@ public class NewsAdapter extends PageAdapter {
 
     private OnItemClickListener mOnItemClickListener;
 
-    public NewsAdapter(Context context, List<PageItem> itemList) {
-        super(context, itemList);
+    public NewsAdapter(List<PageItem> itemList) {
+        super(itemList);
     }
 
     @Override
     protected BasePageViewHolder<PageItem> createNormalViewHolder(ViewGroup parent) {
         return new NewsViewHolder(
-                LayoutInflater.from(context)
+                LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_news_layout,parent,false),
                 mOnItemClickListener
         );
-    }
-
-    public void clear(){
-        itemList.clear();
-        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){

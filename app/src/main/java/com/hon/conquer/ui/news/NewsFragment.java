@@ -3,6 +3,8 @@ package com.hon.conquer.ui.news;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ import com.hon.conquer.vo.event.NewsFavoritesEvent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 import com.hon.optimizedrecyclerviewlib.OptimizedRecyclerView;
+import com.hon.pagerecyclerview.PageRecyclerView;
 import com.hon.pagerecyclerview.item.PageItem;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,9 +48,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
  * E-mail:frank_hon@foxmail.com
  */
 
+@SuppressWarnings("all")
 public class NewsFragment extends BaseFragment implements NewsContract.View {
 
-    private OptimizedRecyclerView mRecyclerView;
+    private PageRecyclerView mNewsListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<PageItem> mNewsItemList = new ArrayList<>();
@@ -115,9 +119,9 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     private void initViews(View view) {
-        mRecyclerView = view.findViewById(R.id.rv_news);
+        mNewsListView = view.findViewById(R.id.prv_news);
         mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
-        mNewsAdapter = new NewsAdapter(getContext(), mNewsItemList);
+        mNewsAdapter = new NewsAdapter(mNewsItemList);
         mNewsAdapter.setOnItemClickListener(position -> {
 
             mCurrentClickedItem = mNewsDetailList.get(position);
@@ -133,9 +137,9 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
             }
         });
 
-        mRecyclerView.setAdapterWithLoading(mNewsAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mNewsListView.setAdapter(mNewsAdapter);
+        mNewsListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mNewsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
@@ -162,9 +166,9 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
                 }
             }
         });
-        mRecyclerView.addItemDecoration(new NewsItemDivider(Util.getColor(R.color.colorDividerColor)));
-//        mRecyclerView.setItemAnimator();
-        mRecyclerView.setOnLoadMoreListener(() -> new Handler().postDelayed(this::loadData, 5000));
+        mNewsListView.addItemDecoration(new NewsItemDivider(Util.getColor(R.color.colorDividerColor)));
+        mNewsListView.setOnLoadMoreListener(() -> new Handler().postDelayed(this::loadData, 5000));
+
         mSwipeRefreshLayout.setOnRefreshListener(() -> onRefresh(mCalendarUtil.getCurrentDate()));
 
         mCalendarUtil = new CalendarUtil(this);
@@ -205,7 +209,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     private void loadData() {
 
         if (!mNewsDetailList.isEmpty()) {
-            loadExistingData(PAGE_SIZE);
+            loadExistingData(false, PAGE_SIZE);
         } else {
             if (mDayCount < 3) {
                 mPresenter.fetchNews(mCalendarUtil.getLastDay(mDayCount), false);
@@ -217,35 +221,36 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     private void loadInitialData() {
-        loadExistingData(mInitialLength);
+        loadExistingData(true, mInitialLength);
+        if(mInitialLength > mNewsDetailList.size()){
+            mNewsAdapter.showLoading();
+            new Handler(Looper.getMainLooper()).postDelayed(this::loadData,5000);
+        }
     }
 
-    private void loadExistingData(int l) {
+    private void loadExistingData(boolean initial, int l) {
         int length = l > mNewsDetailList.size() ? mNewsDetailList.size() : l;
 
-        for (int i = 0; i < length; i++) {
-            ZhihuDailyNewsDetail newsDetail = mNewsDetailList.get(i);
+        List<PageItem> tempList=new ArrayList<>();
+        for(int i=0;i<length;i++){
+
+            ZhihuDailyNewsDetail newsDetail=mNewsDetailList.get(i);
 
             NewsItem newsItem = new NewsItem();
             newsItem.setTitle(newsDetail.getTitle());
             newsItem.setImageUrl(newsDetail.getImages().get(0));
-            mNewsItemList.add(newsItem);
+            tempList.add(newsItem);
         }
 
+        mNewsAdapter.addAll(initial,tempList);
+
         if (length < mNewsDetailList.size()) {
-
-            List<ZhihuDailyNewsDetail> tempList = new ArrayList<>();
-
-            for (int j = length; j < mNewsDetailList.size(); j++) {
-                tempList.add(mNewsDetailList.get(j));
-            }
-
-            mNewsDetailList = tempList;
+            mNewsDetailList = mNewsDetailList.subList(length,mNewsDetailList.size());
         } else {
             mNewsDetailList.clear();
         }
 
-        mNewsAdapter.notifyItemRangeInserted(0, length);
+//        mNewsAdapter.notifyItemRangeInserted(mNewsItemList.size()-length, length);
     }
 
     @Override
@@ -261,6 +266,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     @Override
     public void showNews(ZhihuDailyNews news, boolean initial) {
         mNewsDetailList = news.getStrories();
+        Log.d("hong", "showNews: "+mNewsDetailList);
         if (initial) {
             loadInitialData();
         } else {
@@ -275,7 +281,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     public void smoothScrollToFirst() {
-        mRecyclerView.smoothScrollToPosition(0);
+        mNewsListView.smoothScrollToPosition(0);
     }
 
 }

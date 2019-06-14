@@ -1,10 +1,10 @@
 package com.hon.pagerecyclerview;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,44 +17,43 @@ public class PageRecyclerView extends RecyclerView {
 
     private OnLoadMoreListener mOnLoadMoreListener;
 
-    private float y1,y2;
-    private ScrollDetector mScrollDetector;
-    private static final int Y_THRESHOLD=100;
+    private float y1, y2;
+    private PageScrollerListener mPageScrollerListener;
+    private static final int Y_THRESHOLD = 100;
 
     public PageRecyclerView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public PageRecyclerView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public PageRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mScrollDetector=new ScrollDetector();
+        mPageScrollerListener = new PageScrollerListener();
+
+        addOnScrollListener(new PageScrollerListener());
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent e) {
+    void loadMore() {
 
-        switch (e.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                y1=e.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                y2=e.getY();
-                if(y2<y1-Y_THRESHOLD){
-                    mScrollDetector.handleLoadMore(this);
+        Adapter adapter = getAdapter();
+        if (adapter instanceof PageAdapter) {
+            PageAdapter pageAdapter = (PageAdapter) adapter;
+
+            if(pageAdapter.canLoadMore()){
+                if(!pageAdapter.isLoading()){
+                    pageAdapter.showLoading();
                 }
-                break;
-            default:
-                break;
+                if (mOnLoadMoreListener != null) {
+                    mOnLoadMoreListener.onLoadMore();
+                }
+            }
         }
 
-        return super.onTouchEvent(e);
     }
 
     public OnLoadMoreListener getOnLoadMoreListener() {
@@ -65,7 +64,7 @@ public class PageRecyclerView extends RecyclerView {
         this.mOnLoadMoreListener = onLoadMoreListener;
     }
 
-    public interface OnLoadMoreListener{
+    public interface OnLoadMoreListener {
 
         void onLoadMore();
 

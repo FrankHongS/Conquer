@@ -67,4 +67,15 @@ public class ZhihuDailyNewsDetail implements ItemType{
     public int itemType() {
         return ItemType.NEWS_ITEM_TYPE;
     }
+
+    @Override
+    public String toString() {
+        return "ZhihuDailyNewsDetail{" +
+                "images=" + images +
+                ", type=" + type +
+                ", id=" + id +
+                ", gaPrefix='" + gaPrefix + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

@@ -1,6 +1,6 @@
 package com.hon.pagerecyclerview;
 
-import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +11,7 @@ import com.hon.pagerecyclerview.item.PageItem;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -20,50 +21,50 @@ import androidx.recyclerview.widget.RecyclerView;
 @SuppressWarnings("all")
 public abstract class PageAdapter extends RecyclerView.Adapter<BasePageViewHolder<PageItem>> {
 
-    protected Context context;
     protected List<PageItem> itemList;
 
     private BasePageViewHolder<PageItem> mLoadingViewHolder;
     private BasePageViewHolder<PageItem> mErrorViewHolder;
     private BasePageViewHolder<PageItem> mBottomViewHolder;
 
-    private boolean mIsLoadingShowing = false;
+    private boolean isLoading =false;
     private boolean mIsErrorShowing = false;
-    private boolean mIsBottomShowing=false;
+    private boolean isBotomShowing = false;
 
-    public PageAdapter(Context context, List<PageItem> itemList) {
-        this.context = context;
+    private PageRecyclerView mTargetView;
+
+    public PageAdapter(List<PageItem> itemList) {
         this.itemList = itemList;
     }
 
     @Override
     public BasePageViewHolder<PageItem> onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        switch (viewType){
+        switch (viewType) {
             case PageItem.NORMAL_ITEM:
                 return createNormalViewHolder(parent);
             case PageItem.LOADING_ITEM:
-                if(mLoadingViewHolder!=null)
+                if (mLoadingViewHolder != null)
                     return mLoadingViewHolder;
                 else
                     return new LoadingViewHolder(
-                            LayoutInflater.from(context)
-                            .inflate(R.layout.default_loading_layout,parent,false)
+                            LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.default_loading_layout, parent, false)
                     );
             case PageItem.ERROR_ITEM:
-                if(mErrorViewHolder!=null)
+                if (mErrorViewHolder != null)
                     return mErrorViewHolder;
                 else
                     return new ErrorViewHolder(
-                            LayoutInflater.from(context)
-                                    .inflate(R.layout.default_error_layout,parent,false)
+                            LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.default_error_layout, parent, false)
                     );
             case PageItem.BOTTOM_ITEM:
                 if (mBottomViewHolder != null)
                     return mBottomViewHolder;
                 else
                     return new BottomViewHolder(
-                            LayoutInflater.from(context)
+                            LayoutInflater.from(parent.getContext())
                                     .inflate(R.layout.default_no_more_layout, parent, false)
                     );
             default:
@@ -74,7 +75,7 @@ public abstract class PageAdapter extends RecyclerView.Adapter<BasePageViewHolde
 
     @Override
     public void onBindViewHolder(BasePageViewHolder<PageItem> holder, int position) {
-        holder.bindView(itemList.get(position),position);
+        holder.bindView(itemList.get(position), position);
     }
 
     @Override
@@ -87,56 +88,103 @@ public abstract class PageAdapter extends RecyclerView.Adapter<BasePageViewHolde
         return itemList.get(position).itemType();
     }
 
-    public void showLoading() {
-        if (!mIsLoadingShowing&&!mIsBottomShowing) {
-            itemList.add(new LoadingPageItem());
-            notifyItemInserted(itemList.size() - 1);
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
 
-            mIsLoadingShowing = true;
+        Log.d("hong", "onAttachedToRecyclerView: ");
+
+        if (recyclerView instanceof PageRecyclerView) {
+            this.mTargetView = (PageRecyclerView) recyclerView;
+        } else {
+            throw new RuntimeException("PageAdapter can only attach PageRecyclerView");
         }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull BasePageViewHolder<PageItem> holder) {
+        super.onViewAttachedToWindow(holder);
+
+//        Log.d("hong", "onViewAttachedToWindow: ");
+//        if (mTargetView != null && mTargetView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
+//            int position = holder.getAdapterPosition();
+//            if (position == itemList.size() - 1) {
+//                PageRecyclerView.OnLoadMoreListener onLoadMoreListener = mTargetView.getOnLoadMoreListener();
+//                if (onLoadMoreListener != null) {
+//                    itemList.add(new LoadingPageItem());
+//                    onLoadMoreListener.onLoadMore();
+//                }
+//            }
+//        }
+    }
+
+    public void showLoading() {
+        itemList.add(new LoadingPageItem());
+        notifyItemInserted(itemList.size() - 1);
+
+        isLoading=true;
     }
 
     public void hideLoading() {
-        if (mIsLoadingShowing) {
-            int last = itemList.size() - 1;
-            itemList.remove(last);
-            notifyItemRemoved(last);
-
-            mIsLoadingShowing = false;
-        }
+        int last = itemList.size() - 1;
+        itemList.remove(last);
+        notifyItemRemoved(last);
+        isLoading=false;
     }
 
-    public void showBottom(){
-        if(!mIsBottomShowing){
-
+    public void showBottom() {
+        if (!isBotomShowing) {
             hideLoading();
-
             itemList.add(new BottomPageItem());
             notifyItemInserted(itemList.size() - 1);
 
-            mIsBottomShowing = true;
+            isBotomShowing = true;
         }
     }
 
-    public boolean shouldLoadMore() {
-        return !mIsLoadingShowing&&!mIsBottomShowing;
+    public void addAll(boolean initial,List<PageItem> items){
+        if(!initial){
+            hideLoading();
+        }
+        itemList.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        isBotomShowing=false;
+        itemList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void insertItems(boolean initial, int positionStart, int itemCount) {
+        if(!initial){
+            hideLoading();
+        }
+//        notifyItemRangeInserted(positionStart, itemCount);
+    }
+
+    boolean isLoading(){
+        return isLoading;
+    }
+
+    boolean canLoadMore(){
+        return !isBotomShowing;
     }
 
     protected abstract BasePageViewHolder<PageItem> createNormalViewHolder(ViewGroup parent);
 
-    protected void setLoadingViewHolder(BasePageViewHolder<PageItem> viewHolder){
-        this.mLoadingViewHolder=viewHolder;
+    protected void setLoadingViewHolder(BasePageViewHolder<PageItem> viewHolder) {
+        this.mLoadingViewHolder = viewHolder;
     }
 
-    protected void setErrorViewHolder(BasePageViewHolder<PageItem> viewHolder){
-        this.mErrorViewHolder=viewHolder;
+    protected void setErrorViewHolder(BasePageViewHolder<PageItem> viewHolder) {
+        this.mErrorViewHolder = viewHolder;
     }
 
     protected void setBottomViewHolder(BasePageViewHolder<PageItem> viewHolder) {
         this.mBottomViewHolder = viewHolder;
     }
 
-    static class LoadingViewHolder extends BasePageViewHolder<PageItem>{
+    static class LoadingViewHolder extends BasePageViewHolder<PageItem> {
 
         LoadingViewHolder(View itemView) {
             super(itemView);
@@ -149,7 +197,7 @@ public abstract class PageAdapter extends RecyclerView.Adapter<BasePageViewHolde
 
     }
 
-    static class ErrorViewHolder extends BasePageViewHolder<PageItem>{
+    static class ErrorViewHolder extends BasePageViewHolder<PageItem> {
 
         ErrorViewHolder(View itemView) {
             super(itemView);

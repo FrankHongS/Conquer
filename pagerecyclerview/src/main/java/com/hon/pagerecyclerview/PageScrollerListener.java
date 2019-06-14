@@ -1,5 +1,6 @@
 package com.hon.pagerecyclerview;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,16 +11,18 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * E-mail: v-shhong@microsoft.com
  */
 @SuppressWarnings("all")
-public class ScrollDetector {
+public class PageScrollerListener extends RecyclerView.OnScrollListener {
 
-    public void handleLoadMore(RecyclerView recyclerView){
-        PageAdapter pageAdapter= (PageAdapter) recyclerView.getAdapter();
-        if(pageAdapter.shouldLoadMore()&&isLastItem(recyclerView)){
-            PageRecyclerView pageRecyclerView= (PageRecyclerView) recyclerView;
-            PageRecyclerView.OnLoadMoreListener onLoadMoreListener=pageRecyclerView.getOnLoadMoreListener();
-            if(onLoadMoreListener!=null){
-                pageAdapter.showLoading();
-                onLoadMoreListener.onLoadMore();
+    @Override
+    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+
+        if (isLastItem(recyclerView)) {
+            if (recyclerView instanceof PageRecyclerView) {
+                PageRecyclerView pageRecyclerView = (PageRecyclerView) recyclerView;
+                pageRecyclerView.loadMore();
+            } else {
+                throw new RuntimeException("PageScrollerListener can only bind PageRecyclerView");
             }
         }
     }
