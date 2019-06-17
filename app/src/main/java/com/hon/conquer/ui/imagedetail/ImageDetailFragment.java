@@ -39,7 +39,7 @@ public class ImageDetailFragment extends Fragment {
 
     public static final String IMAGE_POSITION = "image_position";
     public static final String IMAGE_LIST = "image_list";
-    
+
     private ViewPager mViewPager;
     private TextView mIndicatorText;
 
@@ -51,61 +51,58 @@ public class ImageDetailFragment extends Fragment {
     private List<String> mImageUrlList;
     private int mPosition;
 
-    private int mPhotoCount=0;
+    private int mPhotoCount = 0;
 
-    public ImageDetailFragment(){}
+    public ImageDetailFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle=getArguments();
-        if(bundle!=null)
-            mImageUrlList=bundle.getStringArrayList(IMAGE_LIST);
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            mImageUrlList = bundle.getStringArrayList(IMAGE_LIST);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_image_detail,container,false);
+        View view = inflater.inflate(R.layout.fragment_image_detail, container, false);
         initView(view);
         return view;
     }
 
-    private void initView(View view){
-        mViewPager=view.findViewById(R.id.vp_photo);
-        mIndicatorText=view.findViewById(R.id.tv_photo_indicator);
+    private void initView(View view) {
+        mViewPager = view.findViewById(R.id.vp_photo);
+        mIndicatorText = view.findViewById(R.id.tv_photo_indicator);
 
-        mBackButton=view.findViewById(R.id.ib_back);
-        mMoreButton=view.findViewById(R.id.ib_more);
+        mBackButton = view.findViewById(R.id.ib_back);
+        mMoreButton = view.findViewById(R.id.ib_more);
 
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                mIndicatorText.setText((position+1)+"/"+mPhotoCount);
+                mIndicatorText.setText((position + 1) + "/" + mPhotoCount);
             }
         });
 
-        mBackButton.setOnClickListener(
-                v -> getActivity().finish()
-        );
+        mBackButton.setOnClickListener(v -> getActivity().finish());
 
-        mMoreButton.setOnClickListener(
-                this::showPopupWindow
-        );
+        mMoreButton.setOnClickListener(this::showPopupWindow);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mPosition=getActivity().getIntent().getIntExtra(IMAGE_POSITION,2);
+        mPosition = getActivity().getIntent().getIntExtra(IMAGE_POSITION, 2);
 
-        if(mImageUrlList!=null&&mImageUrlList.size()>0){
-            mPagerAdapter=new PhotoViewAdapter(getActivity(),mImageUrlList);
+        if (mImageUrlList != null && mImageUrlList.size() > 0) {
+            mPagerAdapter = new PhotoViewAdapter(mImageUrlList);
             mViewPager.setAdapter(mPagerAdapter);
             mViewPager.setCurrentItem(mPosition);
 
-            mPhotoCount=mImageUrlList.size();
-            mIndicatorText.setText((mPosition+1)+"/"+mPhotoCount);
+            mPhotoCount = mImageUrlList.size();
+            mIndicatorText.setText((mPosition + 1) + "/" + mPhotoCount);
         }
 
     }
@@ -117,14 +114,14 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void showPopupWindow(View view) {
-        List<PopupItem> list=new ArrayList<>();
-        list.add(new PopupItem("save",R.drawable.ic_file_download_24dp));
+        List<PopupItem> list = new ArrayList<>();
+        list.add(new PopupItem("save", R.drawable.ic_file_download_24dp));
 
-        Popup popup=new Popup(getContext(),view);
+        Popup popup = new Popup(getContext(), view);
         popup.setWidth(Util.dip2px(150));
-        popup.setAdapter(new Popup.PopupAdapter(getContext(),list,
-                (v,position)->{
-                    switch (position){
+        popup.setAdapter(new Popup.PopupAdapter(getContext(), list,
+                (v, position) -> {
+                    switch (position) {
                         case 0:
                             downloadImageFromNetwork();
                             break;

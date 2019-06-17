@@ -47,9 +47,10 @@ public class PageRecyclerView extends RecyclerView {
             if(pageAdapter.canLoadMore()){
                 if(!pageAdapter.isLoading()){
                     pageAdapter.showLoading();
-                }
-                if (mOnLoadMoreListener != null) {
-                    mOnLoadMoreListener.onLoadMore();
+                    
+                    if (mOnLoadMoreListener != null) {
+                        mOnLoadMoreListener.onLoadMore();
+                    }
                 }
             }
         }

@@ -27,10 +27,6 @@ $(function(){
 
         android.acquireImageUrl(imgSrc);
 
-		android.setAvatarUrl($('.avatar').attr('src'));
-		android.setAuthor($('.author').html().split('，')[0]);
-		android.setBio($('.bio').html());
-
 		$('.headline').remove();
 		$('.meta').remove();
 		$('.view-more').remove();

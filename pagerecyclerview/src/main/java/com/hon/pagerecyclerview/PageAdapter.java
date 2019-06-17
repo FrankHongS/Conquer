@@ -91,30 +91,11 @@ public abstract class PageAdapter extends RecyclerView.Adapter<BasePageViewHolde
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
 
-        Log.d("hong", "onAttachedToRecyclerView: ");
-
         if (recyclerView instanceof PageRecyclerView) {
             this.mTargetView = (PageRecyclerView) recyclerView;
         } else {
             throw new RuntimeException("PageAdapter can only attach PageRecyclerView");
         }
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull BasePageViewHolder<PageItem> holder) {
-        super.onViewAttachedToWindow(holder);
-
-//        Log.d("hong", "onViewAttachedToWindow: ");
-//        if (mTargetView != null && mTargetView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-//            int position = holder.getAdapterPosition();
-//            if (position == itemList.size() - 1) {
-//                PageRecyclerView.OnLoadMoreListener onLoadMoreListener = mTargetView.getOnLoadMoreListener();
-//                if (onLoadMoreListener != null) {
-//                    itemList.add(new LoadingPageItem());
-//                    onLoadMoreListener.onLoadMore();
-//                }
-//            }
-//        }
     }
 
     public void showLoading() {

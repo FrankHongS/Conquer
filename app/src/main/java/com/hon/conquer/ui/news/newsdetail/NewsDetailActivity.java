@@ -106,9 +106,7 @@ public class NewsDetailActivity extends SwipeBackActivity{
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.e(TAG, "onSaveInstanceState: ");
         if(mNewsDetailFragment.isAdded()){
-            Log.e(TAG, "onSaveInstanceState: added");
             getSupportFragmentManager().putFragment(outState,
                     NewsDetailFragment.class.getSimpleName(),mNewsDetailFragment);
         }

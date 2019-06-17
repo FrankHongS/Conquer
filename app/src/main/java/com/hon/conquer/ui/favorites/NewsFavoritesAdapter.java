@@ -13,7 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.hon.conquer.R;
 import com.hon.conquer.db.FavoriteNews;
-import com.hon.conquer.ui.common.BaseViewHolder;
+import com.hon.conquer.base.BaseViewHolder;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.hon.conquer.ui.common;
+package com.hon.conquer.base;
 
 import android.view.View;
 

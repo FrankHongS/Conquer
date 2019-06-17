@@ -18,31 +18,12 @@ import java.util.Arrays;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class MyJSBridge {
-
-    private String mAvatarUrl;
-    private String mAuthor;
-    private String mBio;
+public class NewsJSBridge {
 
     private Context mContext;
 
-    public MyJSBridge(Context context){
+    public NewsJSBridge(Context context){
         this.mContext=context;
-    }
-
-    @JavascriptInterface
-    public void setAvatarUrl(String avatarUrl){
-        mAvatarUrl=avatarUrl;
-    }
-
-    @JavascriptInterface
-    public void setAuthor(String author){
-        mAuthor=author;
-    }
-
-    @JavascriptInterface
-    public void setBio(String bio){
-        mBio=bio;
     }
 
     @JavascriptInterface
@@ -60,15 +41,4 @@ public class MyJSBridge {
         mContext.startActivity(intent);
     }
 
-    public String getAvatarUrl() {
-        return mAvatarUrl;
-    }
-
-    public String getAuthor() {
-        return mAuthor;
-    }
-
-    public String getBio() {
-        return mBio;
-    }
 }

@@ -1,6 +1,5 @@
 package com.hon.conquer.ui.imagedetail.adapter;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
-import timber.log.Timber;
 
 /**
  * Created by Frank on 2018/9/16.
@@ -28,12 +26,10 @@ import timber.log.Timber;
 
 public class PhotoViewAdapter extends PagerAdapter {
 
-    private Context mContext;
     private List<String> mPhotoUrlList;
 
-    public PhotoViewAdapter(Context context,List<String> urlList){
-        this.mContext=context;
-        this.mPhotoUrlList=urlList;
+    public PhotoViewAdapter(List<String> urlList) {
+        this.mPhotoUrlList = urlList;
     }
 
     @Override
@@ -43,14 +39,14 @@ public class PhotoViewAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view==object;
+        return view == object;
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        View view= LayoutInflater.from(mContext).inflate(R.layout.layout_image_preview_item,container,false);
-        bindView(view,position);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.layout_image_preview_item, container, false);
+        bindView(view, position);
 
         container.addView(view);
         return view;
@@ -61,19 +57,18 @@ public class PhotoViewAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    private void bindView(View view,int position) {
-        Timber.d("bindView %s",mPhotoUrlList.get(position));
-        PhotoView photoView=view.findViewById(R.id.pv_photo_preview);
-        ProgressBar progressBar=view.findViewById(R.id.pb_photo);
+    private void bindView(View view, int position) {
+        PhotoView photoView = view.findViewById(R.id.pv_photo_preview);
+        ProgressBar progressBar = view.findViewById(R.id.pb_photo);
 
-        Glide.with(mContext)
+        Glide.with(view.getContext())
                 .load(mPhotoUrlList.get(position))
                 .apply(
                         new RequestOptions()
                                 .placeholder(R.mipmap.placeholder)
                                 .error(R.mipmap.error_image)
                 )
-                .into(new DrawableImageViewTarget(photoView){
+                .into(new DrawableImageViewTarget(photoView) {
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
                         super.onLoadStarted(placeholder);

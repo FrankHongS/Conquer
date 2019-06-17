@@ -1,7 +1,6 @@
 package com.hon.conquer.vo.news;
 
 import com.google.gson.annotations.SerializedName;
-import com.hon.optimizedrecyclerviewlib.ItemType;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * E-mail:frank_hon@foxmail.com
  */
 
-public class ZhihuDailyNewsDetail implements ItemType{
+public class ZhihuDailyNewsDetail{
 
     @SerializedName("images")
     private List<String> images;
@@ -64,18 +63,9 @@ public class ZhihuDailyNewsDetail implements ItemType{
     }
 
     @Override
-    public int itemType() {
-        return ItemType.NEWS_ITEM_TYPE;
-    }
-
-    @Override
     public String toString() {
         return "ZhihuDailyNewsDetail{" +
-                "images=" + images +
-                ", type=" + type +
-                ", id=" + id +
-                ", gaPrefix='" + gaPrefix + '\'' +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 '}';
     }
 }

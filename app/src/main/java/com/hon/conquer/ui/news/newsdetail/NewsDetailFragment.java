@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,10 @@ import com.hon.conquer.Conquer;
 import com.hon.conquer.R;
 import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
-import com.hon.conquer.ui.common.MyJSBridge;
+import com.hon.conquer.ui.common.NewsJSBridge;
 import com.hon.conquer.util.ToastUtil;
 import com.hon.conquer.util.WebUtil;
+import com.hon.conquer.vo.news.NewsProfile;
 
 import java.util.List;
 
@@ -36,7 +36,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by Frank on 2018/3/8.
@@ -45,21 +44,18 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class NewsDetailFragment extends Fragment implements NewsDetailContract.View {
 
-    private static final String TAG = NewsDetailFragment.class.getSimpleName();
-
     private Toolbar mToolbar;
     private ImageView mAvatar;
     private TextView mTitle;
     private TextView mAuthor;
     private TextView mBio;
     private WebView mNewsDetail;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private int mArticleId;
     private String mArticleTitle;
     private boolean mIsNightMode;
 
-    private MyJSBridge mMyJSBridge;
+    private NewsJSBridge mNewsJSBridge;
 
     private NewsDetailContract.Presenter mNewsPresenter;
 
@@ -81,7 +77,7 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
             mArticleTitle = bundle.getString(NewsDetailActivity.KEY_ARTICLE_TITLE);
         }
 
-        mMyJSBridge = new MyJSBridge(getActivity());
+        mNewsJSBridge = new NewsJSBridge(getActivity());
     }
 
     @Nullable
@@ -102,13 +98,10 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
         mToolbar.setNavigationOnClickListener(v -> getActivity().finish());
 
         mAvatar = view.findViewById(R.id.iv_avatar);
-//        showAvatar();
         mTitle = view.findViewById(R.id.tv_title);
         mTitle.setText(mArticleTitle);
         mAuthor = view.findViewById(R.id.tv_author);
         mBio = view.findViewById(R.id.tv_bio);
-//        mSwipeRefreshLayout=view.findViewById(R.id.srl_web);
-//        mSwipeRefreshLayout.setOnRefreshListener(this::getNewsDetail);
 
         mNewsDetail = view.findViewById(R.id.wv_news_detail);
         setWebView();
@@ -117,9 +110,8 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
     @Override
     public void showContent(String body) {
         String data = WebUtil.appendToHTML(body);
-
         mNewsDetail.loadDataWithBaseURL("x-data://base", data, "text/html", "utf-8", null);
-
+        showTitle(body);
     }
 
     private void setWebView() {
@@ -142,40 +134,28 @@ public class NewsDetailFragment extends Fragment implements NewsDetailContract.V
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                Log.d(TAG, "onPageStarted: ");
-//                mSwipeRefreshLayout.setRefreshing(true);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                Log.d(TAG, "onPageFinished: ");
-                showTitle();
-//                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-//                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-        mNewsDetail.addJavascriptInterface(mMyJSBridge, "android");
+        mNewsDetail.addJavascriptInterface(mNewsJSBridge, "android");
     }
 
-    private void showTitle() {
-        showAvatar(mMyJSBridge.getAvatarUrl());
-        mAuthor.setText(mMyJSBridge.getAuthor());
-        mBio.setText(mMyJSBridge.getBio());
-    }
-
-    private void showAvatar(String url) {
+    private void showTitle(String body) {
+        NewsProfile profile=WebUtil.getProfileFromBody(body);
         Glide.with(Conquer.sConquer)
-                .load(url)
-                .apply(
-                        new RequestOptions()
-                    .transform(new CropCircleTransformation(getActivity()))
-                )
+                .load(profile.getAvatar())
+                .apply(new RequestOptions().circleCrop())
                 .into(mAvatar);
+        mAuthor.setText(profile.getAuthor());
+        mBio.setText(profile.getBio());
     }
 
     public boolean checkIfFavorites() {

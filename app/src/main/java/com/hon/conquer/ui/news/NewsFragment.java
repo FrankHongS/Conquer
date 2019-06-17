@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.common.NewsAdapter;
-import com.hon.conquer.ui.common.NewsItem;
+import com.hon.conquer.vo.news.NewsItem;
 import com.hon.conquer.ui.common.NewsItemDivider;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.CalendarUtil;
@@ -25,7 +24,6 @@ import com.hon.conquer.util.Util;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
-import com.hon.optimizedrecyclerviewlib.OptimizedRecyclerView;
 import com.hon.pagerecyclerview.PageRecyclerView;
 import com.hon.pagerecyclerview.item.PageItem;
 
@@ -56,6 +54,7 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     private List<PageItem> mNewsItemList = new ArrayList<>();
     private List<ZhihuDailyNewsDetail> mNewsDetailList = new ArrayList<>();
+    private List<ZhihuDailyNewsDetail> mNewsDetailTempList = new ArrayList<>();
 
     private NewsAdapter mNewsAdapter;
 
@@ -202,13 +201,14 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     private void onRefresh(String date) {
         mNewsAdapter.clear();
+        mNewsDetailList.clear();
         mDayCount = 0;
         mPresenter.fetchNews(date, true);
     }
 
     private void loadData() {
 
-        if (!mNewsDetailList.isEmpty()) {
+        if (!mNewsDetailTempList.isEmpty()) {
             loadExistingData(false, PAGE_SIZE);
         } else {
             if (mDayCount < 3) {
@@ -222,19 +222,19 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     private void loadInitialData() {
         loadExistingData(true, mInitialLength);
-        if(mInitialLength > mNewsDetailList.size()){
+        if(mInitialLength > mNewsDetailTempList.size()){
             mNewsAdapter.showLoading();
             new Handler(Looper.getMainLooper()).postDelayed(this::loadData,5000);
         }
     }
 
     private void loadExistingData(boolean initial, int l) {
-        int length = l > mNewsDetailList.size() ? mNewsDetailList.size() : l;
+        int length = l > mNewsDetailTempList.size() ? mNewsDetailTempList.size() : l;
 
         List<PageItem> tempList=new ArrayList<>();
         for(int i=0;i<length;i++){
 
-            ZhihuDailyNewsDetail newsDetail=mNewsDetailList.get(i);
+            ZhihuDailyNewsDetail newsDetail=mNewsDetailTempList.get(i);
 
             NewsItem newsItem = new NewsItem();
             newsItem.setTitle(newsDetail.getTitle());
@@ -244,13 +244,12 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
         mNewsAdapter.addAll(initial,tempList);
 
-        if (length < mNewsDetailList.size()) {
-            mNewsDetailList = mNewsDetailList.subList(length,mNewsDetailList.size());
+        if (length < mNewsDetailTempList.size()) {
+            mNewsDetailTempList = mNewsDetailTempList.subList(length,mNewsDetailTempList.size());
         } else {
-            mNewsDetailList.clear();
+            mNewsDetailTempList.clear();
         }
 
-//        mNewsAdapter.notifyItemRangeInserted(mNewsItemList.size()-length, length);
     }
 
     @Override
@@ -265,8 +264,8 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
 
     @Override
     public void showNews(ZhihuDailyNews news, boolean initial) {
-        mNewsDetailList = news.getStrories();
-        Log.d("hong", "showNews: "+mNewsDetailList);
+        mNewsDetailTempList = news.getStrories();
+        mNewsDetailList.addAll(mNewsDetailTempList);
         if (initial) {
             loadInitialData();
         } else {

@@ -1,4 +1,4 @@
-package com.hon.conquer.ui.common;
+package com.hon.conquer.vo.news;
 
 import com.hon.pagerecyclerview.item.PageItem;
 

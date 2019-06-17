@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hon.conquer.R;
+import com.hon.conquer.vo.news.NewsItem;
 import com.hon.pagerecyclerview.BasePageViewHolder;
 import com.hon.pagerecyclerview.item.PageItem;
 
@@ -26,8 +27,6 @@ public class NewsViewHolder extends BasePageViewHolder<PageItem> {
         this(itemView,
                 (int) itemView.getContext().getResources().getDimension(R.dimen.item_news_height),
                 listener);
-
-
     }
 
     public NewsViewHolder(View itemView, int itemHeight,NewsAdapter.OnItemClickListener listener) {
