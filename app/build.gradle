@@ -55,6 +55,7 @@ ext{
     optimizedrecyclerviewVersion='1.0.2'
     eventbusVersion='3.1.1'
     rxPermissionVersion='0.10.2'
+    butterknifeVersion='10.1.0'
 }
 
 dependencies {
@@ -101,6 +102,9 @@ dependencies {
     implementation ("com.github.tbruyelle:rxpermissions:${rxPermissionVersion}"){
         exclude group: "com.android.support"
     }
+
+    implementation "com.jakewharton:butterknife:${butterknifeVersion}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
 
     implementation project(':pagerecyclerview')
 

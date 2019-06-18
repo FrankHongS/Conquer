@@ -8,6 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hon.conquer.ConquerExecutors;
 import com.hon.conquer.R;
@@ -16,12 +23,12 @@ import com.hon.conquer.db.ConquerDatabase;
 import com.hon.conquer.db.FavoriteNews;
 import com.hon.conquer.ui.MainActivity;
 import com.hon.conquer.ui.common.NewsAdapter;
-import com.hon.conquer.vo.news.NewsItem;
 import com.hon.conquer.ui.common.NewsItemDivider;
 import com.hon.conquer.ui.news.newsdetail.NewsDetailActivity;
 import com.hon.conquer.util.CalendarUtil;
 import com.hon.conquer.util.Util;
 import com.hon.conquer.vo.event.NewsFavoritesEvent;
+import com.hon.conquer.vo.news.NewsItem;
 import com.hon.conquer.vo.news.ZhihuDailyNews;
 import com.hon.conquer.vo.news.ZhihuDailyNewsDetail;
 import com.hon.pagerecyclerview.PageRecyclerView;
@@ -34,12 +41,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Frank on 2018/1/26.
@@ -49,8 +52,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 @SuppressWarnings("all")
 public class NewsFragment extends BaseFragment implements NewsContract.View {
 
-    private PageRecyclerView mNewsListView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.prv_news)
+    PageRecyclerView mNewsListView;
+    @BindView(R.id.srl_news)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<PageItem> mNewsItemList = new ArrayList<>();
     private List<ZhihuDailyNewsDetail> mNewsDetailList = new ArrayList<>();
@@ -82,6 +87,8 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
+
+        ButterKnife.bind(this, view);
         initViews(view);
 
         // initial news length
@@ -118,8 +125,6 @@ public class NewsFragment extends BaseFragment implements NewsContract.View {
     }
 
     private void initViews(View view) {
-        mNewsListView = view.findViewById(R.id.prv_news);
-        mSwipeRefreshLayout = view.findViewById(R.id.srl_news);
         mNewsAdapter = new NewsAdapter(mNewsItemList);
         mNewsAdapter.setOnItemClickListener(position -> {
 
