@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import timber.log.Timber;
 
@@ -160,6 +161,10 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return;
+        }
         if(mSnackbar==null){
             mSnackbar=Snackbar.make(mNavigationView,R.string.exit_app,Snackbar.LENGTH_LONG)
                     .setAction(R.string.confirm, v->finish());
